@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.math.BigDecimal;
 
@@ -26,7 +25,7 @@ class ProductEntity {
 
     private String description;
 
-    private String imageURL;
+    private String image_url;
 
     @NotNull(message = "Product must have a price")
     @DecimalMin("0.01")
@@ -40,7 +39,7 @@ class ProductEntity {
         this.code = code;
         this.name = name;
         this.description = description;
-        this.imageURL = imageURL;
+        this.image_url = imageURL;
         this.price = price;
     }
 
@@ -60,8 +59,8 @@ class ProductEntity {
         return description;
     }
 
-    public String getImageURL() {
-        return imageURL;
+    public String getImage_url() {
+        return image_url;
     }
 
     public BigDecimal getPrice() {
@@ -84,8 +83,8 @@ class ProductEntity {
         this.description = description;
     }
 
-    public void setImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void setImage_url(String imageURL) {
+        this.image_url = imageURL;
     }
 
     public void setPrice(BigDecimal price) {

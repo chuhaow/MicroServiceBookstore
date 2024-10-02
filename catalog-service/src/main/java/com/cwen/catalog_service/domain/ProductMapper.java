@@ -6,7 +6,7 @@ class ProductMapper {
                 productEntity.getCode(),
                 productEntity.getName(),
                 productEntity.getDescription(),
-                productEntity.getImageURL(),
+                productEntity.getImage_url(),
                 productEntity.getPrice()
         );
     }
