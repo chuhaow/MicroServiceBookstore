@@ -1,5 +1,6 @@
 package com.cwen.catalog_service.domain;
 
+import com.cwen.catalog_service.ApplicationProperties;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,9 +12,11 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class ProductService {
     private final ProductRepo productRepo;
+    private final ApplicationProperties properties;
 
-    public ProductService(ProductRepo productRepo) {
+    public ProductService(ProductRepo productRepo, ApplicationProperties properties) {
         this.productRepo = productRepo;
+        this.properties = properties;
     }
 
     public PagedResult<Product> getProducts(int pageNum){
