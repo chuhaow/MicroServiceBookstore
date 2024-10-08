@@ -19,9 +19,10 @@ services:
       resources:
         limits:
           memory: 500m
+
   order-db:
     image: postgres:17-alpine
-    container_name: catalog-db
+    container_name: order-db
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
@@ -39,7 +40,7 @@ services:
           memory: 500m
           
   bookstore-rabbitmq:
-    image: rabbiting:3.12.11-management
+    image: rabbitmq:3.12-management
     container_name: bookstore-rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=guest
