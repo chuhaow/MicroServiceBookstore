@@ -1,7 +1,6 @@
 package com.cwen.order_service.web.exception;
 
 
-import com.cwen.order_service.domain.OrderNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;

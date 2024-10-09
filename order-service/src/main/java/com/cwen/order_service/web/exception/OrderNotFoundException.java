@@ -1,6 +1,4 @@
-package com.cwen.order_service.domain;
-
-import org.hibernate.query.Order;
+package com.cwen.order_service.web.exception;
 
 public class OrderNotFoundException extends RuntimeException{
     public OrderNotFoundException(String message){super(message);}
