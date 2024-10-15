@@ -6,10 +6,9 @@ import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
 
@@ -17,30 +16,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
     class CreateOrderTests {
         @Test
         void CreateOrderSuccessTest(){
-           var payload = """
-                   {
-                       "customer":{
-                           "name": "John",
-                           "email" : "siva@gmail.com",
-                           "phone": "111-1111-1111"
-                       },
-                       "address" : {
-                           "addressLine1" : "111 Street st.",
-                           "addressLine2" : " ",
-                           "city" : "City",
-                           "state" : "State",
-                           "zipCode": "0000000",
-                           "country" : "Country"
-                       },
-                       "items" : [
-                           {
-                               "code" : "P100",
-                               "name" : "Product 1",
-                               "price" : 25.50,
-                               "quantity" : 1
-                           }
-                       ]
-                   }""";
+           var payload = TestDataFactory.createValidOrderRequest();
 
            given().contentType(ContentType.JSON)
                    .body(payload)
@@ -52,14 +28,40 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
         }
 
         @Test
-        void CreateOrderRequestMissMandatoryData(){
+        void CreateOrderRequestBadCustomerData(){
             var payload = TestDataFactory.createOrderRequestInvalidCustomer();
             given().contentType(ContentType.JSON)
                     .body(payload)
                     .when()
                     .post("/api/orders")
                     .then()
-                    .statusCode(HttpStatus.BAD_REQUEST.value());
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("errors", notNullValue());;
+        }
+
+        @Test
+        void CreateOrderRequestBadAddressData(){
+            var payload = TestDataFactory.createOrderRequestInvalidAddress();
+            given().contentType(ContentType.JSON)
+                    .body(payload)
+                    .when()
+                    .post("/api/orders")
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("errors", notNullValue());;
+        }
+
+        @Test
+        void CreateOrderRequestNoItemData(){
+            var payload = TestDataFactory.createOrderRequestNoItems();
+            given().contentType(ContentType.JSON)
+                    .body(payload)
+                    .when()
+                    .post("/api/orders")
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("errors", notNullValue());
+
         }
     }
 
