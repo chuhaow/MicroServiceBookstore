@@ -63,6 +63,33 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
                     .body("errors", notNullValue());
 
         }
+        /*
+        @Test
+        void CreateOrderRequestBadItemCode(){
+            var payload = TestDataFactory.createOrderRequestBadProductCode();
+            given().contentType(ContentType.JSON)
+                    .body(payload)
+                    .when()
+                    .post("/api/orders")
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("errors", notNullValue());
+
+        }
+
+        @Test
+        void CreateOrderRequestWrongItemPrice(){
+            var payload = TestDataFactory.createOrderRequestWrongPrice();
+            given().contentType(ContentType.JSON)
+                    .body(payload)
+                    .when()
+                    .post("/api/orders")
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("errors", notNullValue());
+
+        }
+         */
     }
 
 }
