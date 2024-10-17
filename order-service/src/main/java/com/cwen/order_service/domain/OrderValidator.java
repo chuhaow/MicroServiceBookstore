@@ -25,7 +25,7 @@ public class OrderValidator {
         Set<OrderItem> items = req.items();
         for(OrderItem item : items){
             Product product = productServiceClient.getProductByCode(item.code())
-                    .orElseThrow(() -> new InvalidOrderException("Invalid Product Code"));
+                    .orElseThrow(() -> new InvalidOrderException("Invalid Product Code "+ item.code()));
             if(product.price().compareTo(item.price()) != 0){
                 log.error("Product price of {} was excepted but the item price was {}", product.price(),item.price());
                 throw new InvalidOrderException("Product price does not match");
