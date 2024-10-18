@@ -18,7 +18,6 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
     class CreateOrderTests {
         @Test
         void CreateOrderSuccessTest(){
-
             mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
            var payload = TestDataFactory.createValidOrderRequest();
 
@@ -29,6 +28,19 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
                    .then()
                    .statusCode(HttpStatus.CREATED.value())
                    .body("orderNum", notNullValue());
+        }
+
+        @Test
+        void CreateOrderInvalidItemTest(){
+            mockGetProductByCodeNotFound("ABC", "Product 1", new BigDecimal("34.00"));
+            var payload = TestDataFactory.createOrderRequestBadProductCode();
+
+            given().contentType(ContentType.JSON)
+                    .body(payload)
+                    .when()
+                    .post("/api/orders")
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
         @Test

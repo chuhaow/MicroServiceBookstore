@@ -13,6 +13,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.wiremock.integrations.testcontainers.WireMockContainer;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
@@ -60,5 +61,24 @@ public abstract class AbstractIntegrationTest {
                            "price":%f
                         }
                         """.formatted(code,name, price.doubleValue()))));
+    }
+
+    protected static void mockGetProductByCodeNotFound(String code, String name, BigDecimal price){
+        stubFor(WireMock.get(urlMatching("/api/products/" + code))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withStatus(200)
+                        .withBody("""
+                                {
+                                    "type": "https://api.bookstore.com/errors/not-found",
+                                    "title": "Product Not Found",
+                                    "status": 404,
+                                    "detail": "Cannot find product with code: abc",
+                                    "instance": "/api/products/abc",
+                                    "service": "catalog-service",
+                                    "error_category": "Generic",
+                                    "timestamp": "%s"
+                                }
+                        """.formatted(Instant.now()))));
     }
 }
