@@ -14,10 +14,10 @@ import static org.instancio.Select.field;
 
 
 public class TestDataFactory {
-    static final Set<OrderItem> VALID_ORDER_ITEMS =  Set.of(new OrderItem("P100", "Product 1", new BigDecimal("25.50"), 1));
+    static final Set<OrderItem> VALID_ORDER_ITEMS =  Set.of(new OrderItem("P100", "Product 1", new BigDecimal("34.00"), 1));
     static final List<String> VALID_COUNTRIES = List.of("Canada", "America", "Japan");
-    static final Set<OrderItem> INVALID_ORDER_ITEMS = Set.of(new OrderItem("ABCD", "Product 1", new BigDecimal("25.50"), 1));
-
+    static final Set<OrderItem> INVALID_ORDER_BAD_CODE = Set.of(new OrderItem("ABC", "Product 1", new BigDecimal("34.00"), 1));
+    static final Set<OrderItem> INVALID_ORDER_WRONG_PRICE = Set.of(new OrderItem("P100", "Product 1", new BigDecimal("25.50"), 1));
     public static CreateOrderRequest createValidOrderRequest(){
         return Instancio.of(CreateOrderRequest.class)
                 .generate(field(Customer::email), gen -> gen.text().pattern("#a#a#a#a#a#a@mail.com"))
@@ -46,10 +46,19 @@ public class TestDataFactory {
 
     }
 
-    public static CreateOrderRequest createOrderRequestInvalidItems(){
+    public static CreateOrderRequest createOrderRequestBadProductCode(){
         return Instancio.of(CreateOrderRequest.class)
                 .generate(field(Customer::email), gen -> gen.text().pattern("#a#a#a#a#a#a@mail.com"))
-                .set(field(CreateOrderRequest::items), INVALID_ORDER_ITEMS)
+                .set(field(CreateOrderRequest::items), INVALID_ORDER_BAD_CODE)
+                .generate(field(Address::country), gen -> gen.oneOf(VALID_COUNTRIES))
+                .create();
+
+    }
+
+    public static CreateOrderRequest createOrderRequestWrongPrice(){
+        return Instancio.of(CreateOrderRequest.class)
+                .generate(field(Customer::email), gen -> gen.text().pattern("#a#a#a#a#a#a@mail.com"))
+                .set(field(CreateOrderRequest::items), INVALID_ORDER_WRONG_PRICE)
                 .generate(field(Address::country), gen -> gen.oneOf(VALID_COUNTRIES))
                 .create();
 
