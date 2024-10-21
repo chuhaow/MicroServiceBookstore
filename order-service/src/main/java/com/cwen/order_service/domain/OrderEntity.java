@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "orders")
-class OrderEntity {
+public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_id_generator")
     @SequenceGenerator(name = "order_id_generator", sequenceName = "order_id_seq")
