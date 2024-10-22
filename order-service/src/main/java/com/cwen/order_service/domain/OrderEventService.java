@@ -1,6 +1,9 @@
 package com.cwen.order_service.domain;
 
+import com.cwen.order_service.domain.models.events.OrderCancelledEvent;
 import com.cwen.order_service.domain.models.events.OrderCreatedEvent;
+import com.cwen.order_service.domain.models.events.OrderDeliveredEvent;
+import com.cwen.order_service.domain.models.events.OrderErrorEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
@@ -37,6 +40,36 @@ public class OrderEventService {
         this.orderEventRepository.save(orderEvent);
     }
 
+    void save(OrderDeliveredEvent event){
+        OrderEventEntity orderEvent = new OrderEventEntity();
+        orderEvent.setEventId(event.eventId());
+        orderEvent.setEventType(OrderEventType.ORDER_DELIVERED);
+        orderEvent.setOrderNumber(event.orderNumber());
+        orderEvent.setCreatedAt(event.createdAt());
+        orderEvent.setPayload(toJsonPayload(event));
+        this.orderEventRepository.save(orderEvent);
+    }
+
+    void save(OrderCancelledEvent event){
+        OrderEventEntity orderEvent = new OrderEventEntity();
+        orderEvent.setEventId(event.eventId());
+        orderEvent.setEventType(OrderEventType.ORDER_CANCELLED);
+        orderEvent.setOrderNumber(event.orderNumber());
+        orderEvent.setCreatedAt(event.createdAt());
+        orderEvent.setPayload(toJsonPayload(event));
+        this.orderEventRepository.save(orderEvent);
+    }
+
+    void save(OrderErrorEvent event){
+        OrderEventEntity orderEvent = new OrderEventEntity();
+        orderEvent.setEventId(event.eventId());
+        orderEvent.setEventType(OrderEventType.ORDER__PROCESSING_FAILED);
+        orderEvent.setOrderNumber(event.orderNumber());
+        orderEvent.setCreatedAt(event.createdAt());
+        orderEvent.setPayload(toJsonPayload(event));
+        this.orderEventRepository.save(orderEvent);
+    }
+
     public void publishOrderEvents(){
         Sort sort = Sort.by(Sort.Direction.ASC, "createdAt");
         List<OrderEventEntity> orderEvents = this.orderEventRepository.findAll(sort);
@@ -49,11 +82,26 @@ public class OrderEventService {
 
     private void publishEvent(OrderEventEntity event){
         OrderEventType eventType = event.getEventType();
-        if (Objects.requireNonNull(eventType) == OrderEventType.ORDER_CREATED) {
-            OrderCreatedEvent orderCreatedEvent = fromJsonPayload(event.getPayload(), OrderCreatedEvent.class);
-            this.orderEventPublisher.publish(orderCreatedEvent);
-        } else {
-            log.warn("Unknown event type: {}", eventType);
+        switch (eventType)
+        {
+            case ORDER_CREATED:
+                OrderCreatedEvent orderCreatedEvent = fromJsonPayload(event.getPayload(), OrderCreatedEvent.class);
+                this.orderEventPublisher.publish(orderCreatedEvent);
+                break;
+            case ORDER_DELIVERED:
+                OrderDeliveredEvent orderDeliveredEvent = fromJsonPayload(event.getPayload(), OrderDeliveredEvent.class);
+                this.orderEventPublisher.publish(orderDeliveredEvent);
+                break;
+            case ORDER_CANCELLED:
+                OrderCancelledEvent orderCancelledEvent = fromJsonPayload(event.getPayload(), OrderCancelledEvent.class);
+                this.orderEventPublisher.publish(orderCancelledEvent);
+                break;
+            case ORDER__PROCESSING_FAILED:
+                OrderErrorEvent orderErrorEvent = fromJsonPayload(event.getPayload(), OrderErrorEvent.class);
+                this.orderEventPublisher.publish(orderErrorEvent);
+                break;
+            default:
+                log.warn("Unknown event type: {}", eventType);
         }
     }
 

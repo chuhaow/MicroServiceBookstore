@@ -2,7 +2,10 @@ package com.cwen.order_service.domain.helpers;
 
 import com.cwen.order_service.domain.OrderEntity;
 import com.cwen.order_service.domain.models.OrderItem;
+import com.cwen.order_service.domain.models.events.OrderCancelledEvent;
 import com.cwen.order_service.domain.models.events.OrderCreatedEvent;
+import com.cwen.order_service.domain.models.events.OrderDeliveredEvent;
+import com.cwen.order_service.domain.models.events.OrderErrorEvent;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -18,6 +21,43 @@ public class OrderEventMapper {
                 getOrderItems(order),
                 order.getCustomer(),
                 order.getDeliveryAddress(),
+                LocalDateTime.now()
+        );
+    }
+
+    public static OrderDeliveredEvent buildOrderDeliveredEvent(OrderEntity order, LocalDateTime deliveryTime) {
+        return new OrderDeliveredEvent(
+                UUID.randomUUID().toString(),
+                order.getOrderNumber(),
+                getOrderItems(order),
+                order.getCustomer(),
+                order.getDeliveryAddress(),
+                deliveryTime,
+                LocalDateTime.now()
+
+        );
+    }
+
+    public static OrderCancelledEvent buildOrderCancelledEvent(OrderEntity order, String reason){
+        return new OrderCancelledEvent(
+                UUID.randomUUID().toString(),
+                order.getOrderNumber(),
+                getOrderItems(order),
+                order.getCustomer(),
+                order.getDeliveryAddress(),
+                reason,
+                LocalDateTime.now()
+        );
+    }
+
+    public static OrderErrorEvent buildOrderErrorEvent(OrderEntity order, String reason){
+        return new OrderErrorEvent(
+                UUID.randomUUID().toString(),
+                order.getOrderNumber(),
+                getOrderItems(order),
+                order.getCustomer(),
+                order.getDeliveryAddress(),
+                reason,
                 LocalDateTime.now()
         );
     }

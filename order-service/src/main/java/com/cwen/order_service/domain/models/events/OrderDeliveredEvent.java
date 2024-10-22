@@ -10,7 +10,8 @@ import java.util.Set;
 public record OrderDeliveredEvent(
         String eventId,
         String orderNumber,
-        Set<OrderItem> items,
+        Set<OrderItem> orderItems,
         Customer customer,
-        Address shippingAddress,
+        Address deliveryAddress,
+        LocalDateTime deliveredTime,
         LocalDateTime createdAt) { }

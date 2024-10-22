@@ -12,6 +12,6 @@ public record OrderCancelledEvent(
         String orderNumber,
         Set<OrderItem> items,
         Customer customer,
-        Address shippingAddress,
+        Address deliveryAddress,
         String reason,
         LocalDateTime createdAt) { }
