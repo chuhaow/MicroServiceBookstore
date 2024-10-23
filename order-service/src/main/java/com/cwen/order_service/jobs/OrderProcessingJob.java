@@ -1,6 +1,8 @@
 package com.cwen.order_service.jobs;
 
 import com.cwen.order_service.domain.OrderService;
+import net.javacrumbs.shedlock.core.LockAssert;
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,7 +19,9 @@ class OrderProcessingJob {
     }
 
     @Scheduled(fixedRate = 10000)
+    @SchedulerLock(name = "processNewOrders")
     public void processNewOrders(){
+        LockAssert.assertLocked();
         log.info("Processing New Orders");
         orderService.processNewOrders();
     }
