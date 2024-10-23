@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -51,7 +53,7 @@ public class OrderService {
         try{
             if(withInDeliveryZone(order)){
                 orderRepository.updateOrderStatus(order.getOrderNumber(), OrderStatus.DELIVERED);
-                orderEventService.save(OrderEventMapper.buildOrderCreatedEvent(order));
+                orderEventService.save(OrderEventMapper.buildOrderDeliveredEvent(order, LocalDateTime.now()));
             }else{
                 orderRepository.updateOrderStatus(order.getOrderNumber(), OrderStatus.CANCELLED);
                 orderEventService.save(OrderEventMapper.buildOrderCancelledEvent(order, "Delivery location not within Delivery Zone"));
