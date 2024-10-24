@@ -22,7 +22,6 @@ public class OrderEventsPublishingJob {
     @SchedulerLock(name = "publishOrderEvents")
     public void publishOrderEvents() {
         LockAssert.assertLocked();
-        log.info("Publishing order events");
         orderEventService.publishOrderEvents();
     }
 }

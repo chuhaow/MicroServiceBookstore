@@ -2,12 +2,14 @@ package com.cwen.order_service.domain;
 
 
 import com.cwen.order_service.domain.models.CreateOrderRequest;
+import com.cwen.order_service.domain.models.OrderDTO;
 import com.cwen.order_service.domain.models.OrderItem;
 import com.cwen.order_service.domain.models.OrderStatus;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 class OrderMapper {
     static OrderEntity toEntity(CreateOrderRequest req) {
@@ -28,5 +30,21 @@ class OrderMapper {
         }
         entity.setItems(orderItems);
         return entity;
+    }
+
+    static OrderDTO toDataTransferObject(OrderEntity entity) {
+        Set<OrderItem> orderItems = entity.getItems().stream()
+                .map(item -> new OrderItem(item.getCode(), item.getName(), item.getPrice(), item.getQuantity()))
+                .collect(Collectors.toSet());
+        return new OrderDTO(
+                entity.getOrderNumber(),
+                entity.getUsername(),
+                orderItems,
+                entity.getCustomer(),
+                entity.getDeliveryAddress(),
+                entity.getStatus(),
+                entity.getComments(),
+                entity.getCreatedAt()
+        );
     }
 }

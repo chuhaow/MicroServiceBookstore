@@ -22,7 +22,6 @@ class OrderProcessingJob {
     @SchedulerLock(name = "processNewOrders")
     public void processNewOrders(){
         LockAssert.assertLocked();
-        log.info("Processing New Orders");
         orderService.processNewOrders();
     }
 }

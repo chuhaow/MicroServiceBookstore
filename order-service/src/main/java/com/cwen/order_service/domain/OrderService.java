@@ -1,18 +1,16 @@
 package com.cwen.order_service.domain;
 
 import com.cwen.order_service.domain.helpers.OrderEventMapper;
-import com.cwen.order_service.domain.models.CreateOrderRequest;
-import com.cwen.order_service.domain.models.CreateOrderResponse;
-import com.cwen.order_service.domain.models.OrderStatus;
+import com.cwen.order_service.domain.models.*;
 import com.cwen.order_service.domain.models.events.OrderCreatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -30,6 +28,15 @@ public class OrderService {
         this.orderEventService = orderEventService;
     }
 
+    public List<OrderSummary> getOrders(String username){
+        return orderRepository.findByUsername(username);
+    }
+
+    public Optional<OrderDTO> getUserOrder(String username, String orderNumber){
+        return orderRepository.findByUsernameAndOrderNumber(username,orderNumber)
+                .map(OrderMapper::toDataTransferObject);
+    }
+
     public CreateOrderResponse createOrder(String username, CreateOrderRequest req){
         orderValidator.validate(req);
         OrderEntity newOrder = OrderMapper.toEntity(req);
@@ -43,7 +50,7 @@ public class OrderService {
 
     public void processNewOrders(){
         List<OrderEntity> orders = orderRepository.findByStatus(OrderStatus.NEW);
-        log.info("Number of new orders: {}", orders.size());
+
         for(OrderEntity order : orders){
             this.process(order);
         }
