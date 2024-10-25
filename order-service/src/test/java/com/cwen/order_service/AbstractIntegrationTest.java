@@ -67,12 +67,12 @@ public abstract class AbstractIntegrationTest {
         stubFor(WireMock.get(urlMatching("/api/products/" + code))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
-                        .withStatus(200)
+                        .withStatus(400)
                         .withBody("""
                                 {
-                                    "type": "https://api.bookstore.com/errors/not-found",
-                                    "title": "Product Not Found",
-                                    "status": 404,
+                                    "type": "https://api.bookstore.com/errors/bad-request",
+                                    "title": "Invalid Order",
+                                    "status": 400,
                                     "detail": "Cannot find product with code: abc",
                                     "instance": "/api/products/abc",
                                     "service": "catalog-service",

@@ -1,17 +1,23 @@
 package com.cwen.order_service.web.controllers;
 
 import com.cwen.order_service.AbstractIntegrationTest;
+import com.cwen.order_service.domain.models.OrderSummary;
 import com.cwen.order_service.util.TestDataFactory;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@Sql("/test-orders.sql")
 public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
 
     @Nested
@@ -79,33 +85,37 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
                     .body("errors", notNullValue());
 
         }
-        /*
+    }
+
+    @Nested
+    class GetOrderByOrderTests{
         @Test
-        void CreateOrderRequestBadItemCode(){
-            var payload = TestDataFactory.createOrderRequestBadProductCode();
-            given().contentType(ContentType.JSON)
-                    .body(payload)
-                    .when()
-                    .post("/api/orders")
+        void shouldGetOrderSuccessTest(){
+            List<OrderSummary> orderSummaries = given().when()
+                    .get("/api/orders")
                     .then()
-                    .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .body("errors", notNullValue());
-
+                    .statusCode(200)
+                    .extract()
+                    .body()
+                    .as(new TypeRef<>(){});
+            assertThat(orderSummaries).hasSize(1);
         }
+        //TODO: Update tests when user system is complete.
+    }
+
+    @Nested
+    class GetOrderByOrderNumberTests{
+        String orderNumber = "asdf-1234";
 
         @Test
-        void CreateOrderRequestWrongItemPrice(){
-            var payload = TestDataFactory.createOrderRequestWrongPrice();
-            given().contentType(ContentType.JSON)
-                    .body(payload)
-                    .when()
-                    .post("/api/orders")
+        void shouldGetOrderSuccessTest(){
+            given().when()
+                    .get("/api/orders/" + orderNumber)
                     .then()
-                    .statusCode(HttpStatus.BAD_REQUEST.value())
-                    .body("errors", notNullValue());
-
+                    .statusCode(200)
+                    .body("orderNumber", is (orderNumber))
+                    .body("items.size()", is(2));
         }
-         */
     }
 
 }
