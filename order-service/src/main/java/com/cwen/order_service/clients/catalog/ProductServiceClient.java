@@ -16,7 +16,6 @@ public class ProductServiceClient {
     private static Logger log = LoggerFactory.getLogger(ProductServiceClient.class);
 
     private final RestClient restClient;
-    private final String catalogServiceBaseUrl = System.getenv("ORDER_CATALOG_SERVICE_URL");
 
     public ProductServiceClient(RestClient restClient) {
         this.restClient = restClient;
