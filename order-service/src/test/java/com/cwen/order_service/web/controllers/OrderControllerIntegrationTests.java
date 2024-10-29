@@ -3,10 +3,13 @@ package com.cwen.order_service.web.controllers;
 import com.cwen.order_service.AbstractIntegrationTest;
 import com.cwen.order_service.domain.models.OrderSummary;
 import com.cwen.order_service.util.TestDataFactory;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -22,6 +25,15 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
 
     @Nested
     class CreateOrderTests {
+
+        @Autowired
+        private CircuitBreakerRegistry circuitBreakerRegistry;
+
+        @BeforeEach
+        public void setUp() {
+            circuitBreakerRegistry.circuitBreaker("catalog-service").reset();
+        }
+
         @Test
         void CreateOrderSuccessTest(){
             mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
