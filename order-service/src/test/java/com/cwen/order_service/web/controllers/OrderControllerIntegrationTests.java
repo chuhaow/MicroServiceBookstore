@@ -26,6 +26,8 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
     @Nested
     class CreateOrderTests {
 
+        //The Bean exists, it's just a problem of with inspections
+        @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
         @Autowired
         private CircuitBreakerRegistry circuitBreakerRegistry;
 
