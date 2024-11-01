@@ -4,7 +4,10 @@ import com.cwen.notification_service.AbstractIntegrationTest;
 import com.cwen.notification_service.ApplicationProperties;
 import com.cwen.notification_service.domain.models.Address;
 import com.cwen.notification_service.domain.models.Customer;
+import com.cwen.notification_service.domain.models.events.OrderCancelledEvent;
 import com.cwen.notification_service.domain.models.events.OrderCreatedEvent;
+import com.cwen.notification_service.domain.models.events.OrderDeliveredEvent;
+import com.cwen.notification_service.domain.models.events.OrderErrorEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -27,9 +30,6 @@ public class OrderEventHandlerTest extends AbstractIntegrationTest {
     RabbitTemplate rabbitTemplate;
 
     @Autowired
-    ObjectMapper objectMapper;
-
-    @Autowired
     ApplicationProperties applicationProperties;
 
     Customer customer = new Customer("John", "email@email.com", "12312341234");
@@ -46,6 +46,46 @@ public class OrderEventHandlerTest extends AbstractIntegrationTest {
             verify(notificationService).sendOrderCreatedNotification(any(OrderCreatedEvent.class));
         });
     }
+
+    @Test
+    void handleOrderDeliveredEvent(){
+        String orderNumber = UUID.randomUUID().toString();
+
+        var event = new OrderDeliveredEvent(UUID.randomUUID().toString(), orderNumber, Set.of(), customer, address, LocalDateTime.now(),  LocalDateTime.now());
+        rabbitTemplate.convertAndSend(applicationProperties.orderEventsExchange(), applicationProperties.newOrdersQueue(), event);
+
+        await().atMost(30, TimeUnit.SECONDS).untilAsserted( () ->{
+            verify(notificationService).sendOrderCreatedNotification(any(OrderCreatedEvent.class));
+        });
+    }
+
+    @Test
+    void handleOrderCancelledEvent(){
+        String orderNumber = UUID.randomUUID().toString();
+
+        var event = new OrderCancelledEvent(UUID.randomUUID().toString(), orderNumber, Set.of(), customer, address, "Reason",  LocalDateTime.now());
+        rabbitTemplate.convertAndSend(applicationProperties.orderEventsExchange(), applicationProperties.newOrdersQueue(), event);
+
+        await().atMost(30, TimeUnit.SECONDS).untilAsserted( () ->{
+            verify(notificationService).sendOrderCreatedNotification(any(OrderCreatedEvent.class));
+        });
+    }
+
+    @Test
+    void handleOrderErrorEvent(){
+        String orderNumber = UUID.randomUUID().toString();
+
+        var event = new OrderErrorEvent(UUID.randomUUID().toString(), orderNumber, Set.of(), customer, address, "Reason",  LocalDateTime.now());
+        rabbitTemplate.convertAndSend(applicationProperties.orderEventsExchange(), applicationProperties.newOrdersQueue(), event);
+
+        await().atMost(30, TimeUnit.SECONDS).untilAsserted( () ->{
+            verify(notificationService).sendOrderCreatedNotification(any(OrderCreatedEvent.class));
+        });
+    }
+
+
+
+
 
     @Test
     void handleDuplicateOrderCreatedEvent() {
