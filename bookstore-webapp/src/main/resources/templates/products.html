@@ -14,7 +14,7 @@
             <template x-for="product in products.data">
                 <div class="col mb-3">
                     <div class="card h-100 product">
-                        <img :src="product.imageUrl"
+                        <img :src="product.imageURL"
                              class="card-img-top"
                              height="300" width="200"
                         />
@@ -32,7 +32,7 @@
                         <div class="card-footer" style="background: transparent; border-top: 0;">
                             <div class="d-grid gap-2">
                                 <button class="btn btn-primary" @click="addToCart(product)">
-                                    Add To Card
+                                    Add To Cart
                                 </button>
                             </div>
                         </div>

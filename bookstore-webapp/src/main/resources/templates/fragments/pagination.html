@@ -5,17 +5,22 @@
                 <li class="page-item" :class="{ 'disabled': products.isFirst }">
                     <a class="page-link" href="/products?page=1">First</a>
                 </li>
-                <li class="page-item" :class="{ 'disabled': !products.hasPrevious }">
+                <li class="page-item" :class="{ 'disabled': products.isLast }">
                     <a class="page-link" href="#"
-                       :href="'/products?page=' + (products.pageNumber-1)">Previous</a>
+                       :href="'/products?page=' + (products.totalPages)">Last</a>
                 </li>
+                <template x-for="page in Array.from({ length: products.totalPages }, (_, i) => i + 1).filter(page => page >= Math.max(1, products.pageNumber - 2) && page <= Math.min(products.totalPages, products.pageNumber + 2))" :key="page">
+                    <li class="page-item" :class="{ 'active': page === products.pageNumber }">
+                        <a class="page-link" href="#" :href="'/products?page=' + page" x-text="page"></a>
+                    </li>
+                </template>
                 <li class="page-item" :class="{ 'disabled': !products.hasNext }">
                     <a class="page-link" href="#"
                        :href="'/products?page=' + (products.pageNumber+1)">Next</a>
                 </li>
-                <li class="page-item" :class="{ 'disabled': products.isLast }">
+                <li class="page-item" :class="{ 'disabled': !products.hasPrevious }">
                     <a class="page-link" href="#"
-                       :href="'/products?page=' + (products.totalPages)">Last</a>
+                       :href="'/products?page=' + (products.pageNumber-1)">Previous</a>
                 </li>
             </ul>
         </nav>
