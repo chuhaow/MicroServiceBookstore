@@ -11,7 +11,7 @@ public record OrderDTO(
         String user,
         Set<OrderItem> items,
         Customer customer,
-        Address deliveryAddress,
+        Address address,
         OrderStatus status,
         String comments,
         LocalDateTime createdAt
