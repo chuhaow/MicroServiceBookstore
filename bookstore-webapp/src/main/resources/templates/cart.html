@@ -52,7 +52,8 @@
                                id="customerName"
                                name="customerName"
                                x-model="orderForm.customer.name"
-                               value=""/>
+                               value=""
+                               required/>
                     </div>
                     <div class="col-md-6">
                         <label for="customerEmail" class="form-label">Customer Email</label>
@@ -60,7 +61,8 @@
                                id="customerEmail"
                                name="customerEmail"
                                x-model="orderForm.customer.email"
-                               value="">
+                               value=""
+                               required>
                     </div>
                     <div class="col-md-6">
                         <label for="customerPhone" class="form-label">Customer Phone</label>
@@ -68,14 +70,16 @@
                                id="customerPhone"
                                name="customerPhone"
                                x-model="orderForm.customer.phone"
-                               value="">
+                               value=""
+                               required>
                     </div>
                     <div class="col-6">
                         <label for="deliveryAddressLine1" class="form-label">Delivery Address Line 1</label>
                         <input class="form-control"
                                id="deliveryAddressLine1"
                                name="deliveryAddressLine1"
-                               x-model="orderForm.address.addressLine1"/>
+                               x-model="orderForm.address.addressLine1"
+                               required/>
                     </div>
                     <div class="col-6">
                         <label for="deliveryAddressLine2" class="form-label">Delivery Address Line 2</label>
@@ -89,28 +93,32 @@
                         <input class="form-control"
                                id="deliveryAddressCity"
                                name="deliveryAddressCity"
-                               x-model="orderForm.address.city"/>
+                               x-model="orderForm.address.city"
+                               required/>
                     </div>
                     <div class="col-6">
                         <label for="deliveryAddressState" class="form-label">Delivery Address State</label>
                         <input class="form-control"
                                id="deliveryAddressState"
                                name="deliveryAddressState"
-                               x-model="orderForm.address.state"/>
+                               x-model="orderForm.address.state"
+                               required/>
                     </div>
                     <div class="col-6">
                         <label for="deliveryAddressZipCode" class="form-label">Delivery Address ZipCode</label>
                         <input class="form-control"
                                id="deliveryAddressZipCode"
                                name="deliveryAddressZipCode"
-                               x-model="orderForm.address.zipCode"/>
+                               x-model="orderForm.address.zipCode"
+                               required/>
                     </div>
                     <div class="col-6">
                         <label for="deliveryAddressCountry" class="form-label">Delivery Address Country</label>
                         <input class="form-control"
                                id="deliveryAddressCountry"
                                name="deliveryAddressCountry"
-                               x-model="orderForm.address.country"/>
+                               x-model="orderForm.address.country"
+                               required/>
                     </div>
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary">Place Order</button>
