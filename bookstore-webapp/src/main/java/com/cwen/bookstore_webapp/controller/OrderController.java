@@ -14,8 +14,12 @@ public class OrderController {
     }
 
     @GetMapping("/orders/{orderNumber}")
-    String OrderDetails(@PathVariable String orderNumber, Model model){
+    String orderDetails(@PathVariable String orderNumber, Model model){
         model.addAttribute("orderNumber", orderNumber);
         return "orderDetails";
+    }
+    @GetMapping("/orders")
+    String ordersList(){
+       return "orders";
     }
 }
