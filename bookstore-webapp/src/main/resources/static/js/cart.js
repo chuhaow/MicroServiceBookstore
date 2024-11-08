@@ -36,6 +36,8 @@ document.addEventListener('alpine:init', () =>{
                 success: (resp) =>{
                     this.clearCart();
                     alert("Order success")
+
+                    window.location = "/orders/"+resp.orderNum;
                 },
                 error:(err) =>{
                     console.log("Order Creation Error: ", err)
