@@ -7,7 +7,7 @@ document.addEventListener('alpine:init', () =>{
                 email: "email@email.com",
                 phone: "11111111111"
             },
-            deliveryAddress:{
+            address:{
                 addressLine1: "123 street",
                 addressLine2: "",
                 city: "City",
