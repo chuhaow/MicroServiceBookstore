@@ -28,7 +28,7 @@ document.addEventListener('alpine:init', () =>{
             console.log("Trying to place an order...")
             console.log("Order data to be sent:", JSON.stringify(order));
             $.ajax({
-                url: apiGatewayUrl+'/orders/api/orders',
+                url: '/api/orders',
                 type: "POST",
                 dataType: "json",
                 contentType: "application/json",

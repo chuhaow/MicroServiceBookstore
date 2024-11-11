@@ -6,7 +6,7 @@ document.addEventListener("alpine:init", () =>{
             updateCartItemCount();
         },
         loadOrders(){
-            $.getJSON(apiGatewayUrl+"/orders/api/orders", (data) =>{
+            $.getJSON("/api/orders", (data) =>{
                 this.orders = data
             })
         }
