@@ -86,9 +86,11 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.5
-    command: ['start-dev', '--http-port=9191']
+    command: ['start-dev', '--import-realm','--http-port=9191']
     container_name: keycloak
     hostname: keycloak
+    volumes:
+      - ./realm-config:/opt/keycloak/data/import
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=password
