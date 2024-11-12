@@ -1,4 +1,5 @@
-package com.cwen.order_service.domain.models;
+package com.cwen.bookstore_webapp.client.orders.models;
+
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
