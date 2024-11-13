@@ -5,19 +5,23 @@ import com.cwen.bookstore_webapp.client.orders.models.CreateOrderRequest;
 import com.cwen.bookstore_webapp.client.orders.models.OrderCreatedResponseDTO;
 import com.cwen.bookstore_webapp.client.orders.models.OrderDTO;
 import com.cwen.bookstore_webapp.client.orders.models.OrderSummary;
+import com.cwen.bookstore_webapp.services.SecurityHelper;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class OrderController {
 
     private final OrderServiceClient orderServiceClient;
-    public OrderController(OrderServiceClient orderServiceClient) {
+    private final SecurityHelper securityHelper;
+    public OrderController(OrderServiceClient orderServiceClient, SecurityHelper securityHelper) {
         this.orderServiceClient = orderServiceClient;
+        this.securityHelper = securityHelper;
     }
 
     @GetMapping("/cart")
@@ -39,19 +43,25 @@ public class OrderController {
     @PostMapping("/api/orders")
     @ResponseBody
     OrderCreatedResponseDTO createOrder(@Valid @RequestBody CreateOrderRequest orderRequest){
-        return orderServiceClient.createOrder(orderRequest);
+        String accessToken =  securityHelper.getAccessToken();
+        Map<String, ?> headers = Map.of("Authorization", "Bearer " + accessToken);
+        return orderServiceClient.createOrder(headers,orderRequest);
     }
 
     @GetMapping("/api/orders/{orderNumber}")
     @ResponseBody
-    OrderDTO getORder(@PathVariable String orderNumber){
-        return orderServiceClient.getOrder(orderNumber);
+    OrderDTO getOrder(@PathVariable String orderNumber){
+        String accessToken =  securityHelper.getAccessToken();
+        Map<String, ?> headers = Map.of("Authorization", "Bearer " + accessToken);
+        return orderServiceClient.getOrder(headers,orderNumber);
     }
 
     @GetMapping("/api/orders")
     @ResponseBody
     List<OrderSummary> getOrders(){
-        return orderServiceClient.getOrders();
+        String accessToken =  securityHelper.getAccessToken();
+        Map<String, ?> headers = Map.of("Authorization", "Bearer " + accessToken);
+        return orderServiceClient.getOrders(headers);
     }
 
 
