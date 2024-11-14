@@ -547,7 +547,7 @@
     "alwaysDisplayInConsole" : false,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "YMtmsNEPbq6v5jLZzkRi72hhAomOsVQ0",
-    "redirectUris" : [ "http://localhost:8080/login/oauth/code/bookstore-webapp" ],
+    "redirectUris" : [ "http://localhost:8080/login/oauth2/code/bookstore-webapp" ],
     "webOrigins" : [ "http://localhost:8080" ],
     "notBefore" : 0,
     "bearerOnly" : false,
