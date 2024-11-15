@@ -12,7 +12,9 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class
+
+SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(c -> c.requestMatchers("/actuator/**", "/v3/api-docs/**")

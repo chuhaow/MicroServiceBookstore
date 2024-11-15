@@ -42,6 +42,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
            var payload = TestDataFactory.createValidOrderRequest();
 
            given().contentType(ContentType.JSON)
+                   .header("Authorization", "Bearer " + getToken())
                    .body(payload)
                    .when()
                    .post("/api/orders")
@@ -56,6 +57,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
             var payload = TestDataFactory.createOrderRequestBadProductCode();
 
             given().contentType(ContentType.JSON)
+                    .header("Authorization", "Bearer " + getToken())
                     .body(payload)
                     .when()
                     .post("/api/orders")
@@ -67,6 +69,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
         void CreateOrderRequestBadCustomerData(){
             var payload = TestDataFactory.createOrderRequestInvalidCustomer();
             given().contentType(ContentType.JSON)
+                    .header("Authorization", "Bearer " + getToken())
                     .body(payload)
                     .when()
                     .post("/api/orders")
@@ -79,6 +82,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
         void CreateOrderRequestBadAddressData(){
             var payload = TestDataFactory.createOrderRequestInvalidAddress();
             given().contentType(ContentType.JSON)
+                    .header("Authorization", "Bearer " + getToken())
                     .body(payload)
                     .when()
                     .post("/api/orders")
@@ -91,6 +95,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
         void CreateOrderRequestNoItemData(){
             var payload = TestDataFactory.createOrderRequestNoItems();
             given().contentType(ContentType.JSON)
+                    .header("Authorization", "Bearer " + getToken())
                     .body(payload)
                     .when()
                     .post("/api/orders")
@@ -106,6 +111,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
         @Test
         void shouldGetOrderSuccessTest(){
             List<OrderSummary> orderSummaries = given().when()
+                    .header("Authorization", "Bearer " + getToken())
                     .get("/api/orders")
                     .then()
                     .statusCode(200)
@@ -124,6 +130,7 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
         @Test
         void shouldGetOrderSuccessTest(){
             given().when()
+                    .header("Authorization", "Bearer " + getToken())
                     .get("/api/orders/" + orderNumber)
                     .then()
                     .statusCode(200)
