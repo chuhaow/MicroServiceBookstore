@@ -12,7 +12,7 @@ import org.testcontainers.utility.DockerImageName;
 @TestConfiguration(proxyBeanMethods = false)
 class TestcontainersConfiguration {
 
-	private static String KEYCLOAK_IMAGE = "quay.io/keycloak/keyloak:26.0.5";
+	private static String KEYCLOAK_IMAGE = "quay.io/keycloak/keycloak:26.0.5";
 	private static String realmImportFile = "/test-bookstore-realm.json";
 	private static String realmName = "bookstore";
 
@@ -30,7 +30,9 @@ class TestcontainersConfiguration {
 
 	@Bean
 	KeycloakContainer keycloak(DynamicPropertyRegistry registry){
-		var keycloak = new KeycloakContainer(KEYCLOAK_IMAGE).withRealmImportFile(realmImportFile);
+		var keycloak = new KeycloakContainer(KEYCLOAK_IMAGE)
+				.withRealmImportFile(realmImportFile)
+				.withStartupTimeout(java.time.Duration.ofMinutes(5));
 		registry.add(
 				"spring.security.oauth2.resourceserver.jwt.issuer-uri",
 				() -> keycloak.getAuthServerUrl() + "/realms/" + realmName);

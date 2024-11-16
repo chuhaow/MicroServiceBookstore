@@ -120,7 +120,6 @@ public class OrderControllerIntegrationTests extends AbstractIntegrationTest {
                     .as(new TypeRef<>(){});
             assertThat(orderSummaries).hasSize(1);
         }
-        //TODO: Update tests when user system is complete.
     }
 
     @Nested
