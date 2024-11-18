@@ -21,12 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static com.cwen.order_service.util.TestDataFactory.*;
 import static org.junit.jupiter.api.Named.named;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -55,16 +57,18 @@ public class OrderControllerUnitTests {
 
     @BeforeEach
     void setUp() {
-        given(securityService.getLoginUserName()).willReturn("user");
+        given(securityService.getLoginUserName()).willReturn("test");
     }
 
     @ParameterizedTest(name = "[{index}]-{0}")
     @MethodSource("createOrderRequestProvider")
+    @WithMockUser
     void InvalidPayload(CreateOrderRequest req) throws Exception {
         given(orderService.createOrder(eq("user"), any(CreateOrderRequest.class)))
                 .willReturn(null);
 
         mockMvc.perform(post("/api/orders")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
                 .andDo(print())
@@ -73,6 +77,7 @@ public class OrderControllerUnitTests {
     }
 
     @Test
+    @WithMockUser
     void getOrdersSuccess() throws Exception {
         List<OrderSummary> expectedOrders = Arrays.asList(
                 new OrderSummary("asdf-1234", OrderStatus.NEW),
@@ -89,6 +94,7 @@ public class OrderControllerUnitTests {
     }
 
     @Test
+    @WithMockUser
     void getUserOrderSuccess() throws Exception {
         String orderNumber = "asdf-1234";
         String username = "user";
@@ -113,6 +119,7 @@ public class OrderControllerUnitTests {
     }
 
     @Test
+    @WithMockUser
     void getOrderNotFound() throws Exception {
         String orderNumber = "non-existent-order";
         String username = "user";
