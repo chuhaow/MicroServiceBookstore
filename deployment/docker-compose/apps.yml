@@ -44,7 +44,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 700m
+          memory: 1gb
 
   notification-service:
     image: cwen2001/bookstore-notification-service
