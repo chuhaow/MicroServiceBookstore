@@ -47,7 +47,7 @@
 
                 <form class="row g-3" method="post" @submit.prevent="createOrder">
                     <div class="col-md-6">
-                        <label for="customerName" class="form-label">Customer Name</label>
+                        <label for="customerName" class="form-label">Name</label>
                         <input type="text" class="form-control"
                                id="customerName"
                                name="customerName"
@@ -56,7 +56,7 @@
                                required/>
                     </div>
                     <div class="col-md-6">
-                        <label for="customerEmail" class="form-label">Customer Email</label>
+                        <label for="customerEmail" class="form-label">Email</label>
                         <input type="email" class="form-control"
                                id="customerEmail"
                                name="customerEmail"
@@ -65,7 +65,7 @@
                                required>
                     </div>
                     <div class="col-md-6">
-                        <label for="customerPhone" class="form-label">Customer Phone</label>
+                        <label for="customerPhone" class="form-label">Phone Number</label>
                         <input type="text" class="form-control"
                                id="customerPhone"
                                name="customerPhone"
@@ -89,7 +89,7 @@
                                x-model="orderForm.address.addressLine2"/>
                     </div>
                     <div class="col-6">
-                        <label for="deliveryAddressCity" class="form-label">Delivery Address City</label>
+                        <label for="deliveryAddressCity" class="form-label">City</label>
                         <input class="form-control"
                                id="deliveryAddressCity"
                                name="deliveryAddressCity"
@@ -97,7 +97,7 @@
                                required/>
                     </div>
                     <div class="col-6">
-                        <label for="deliveryAddressState" class="form-label">Delivery Address State</label>
+                        <label for="deliveryAddressState" class="form-label">State</label>
                         <input class="form-control"
                                id="deliveryAddressState"
                                name="deliveryAddressState"
@@ -105,7 +105,7 @@
                                required/>
                     </div>
                     <div class="col-6">
-                        <label for="deliveryAddressZipCode" class="form-label">Delivery Address ZipCode</label>
+                        <label for="deliveryAddressZipCode" class="form-label">Zip-Code</label>
                         <input class="form-control"
                                id="deliveryAddressZipCode"
                                name="deliveryAddressZipCode"
@@ -113,12 +113,22 @@
                                required/>
                     </div>
                     <div class="col-6">
-                        <label for="deliveryAddressCountry" class="form-label">Delivery Address Country</label>
-                        <input class="form-control"
+                        <label for="deliveryAddressCountry" class="form-label">Country</label>
+                        <select class="form-control"
+                                id="deliveryAddressCountry"
+                                name="deliveryAddressCountry"
+                                x-model="orderForm.address.country"
+                                required>
+                            <template x-for="country in formValidationData.deliverableCountries">
+                                <option x-text="country" :value="country"></option>
+                            </template>
+
+                        </select>
+                        <!--<input class="form-control"
                                id="deliveryAddressCountry"
                                name="deliveryAddressCountry"
                                x-model="orderForm.address.country"
-                               required/>
+                               required/>-->
                     </div>
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary">Place Order</button>

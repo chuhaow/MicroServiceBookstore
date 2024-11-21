@@ -16,6 +16,7 @@ document.addEventListener('alpine:init', () =>{
                 country: "Country"
             }
         },
+        formValidationData: {deliverableCountries:["Canada", "Japan", "USA", "UK"]},
 
         init(){
             updateCartItemCount();
