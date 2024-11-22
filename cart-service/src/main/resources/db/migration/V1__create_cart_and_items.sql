@@ -1,12 +1,12 @@
-create sequence cart_id_seq start with 1 increment by 1;
+create sequence cart_id_seq start with 1 increment by 50;
 
-create sequence cart_item_id_seq start with 1 increment by 1;
+create sequence cart_item_id_seq start with 1 increment by 50;
 
 create table carts (
                        cart_id bigint default nextval('cart_id_seq') primary key,
-                       user_id bigint not null,
+                       user_id text not null,
                        created_at timestamp default current_timestamp,
-                       updated_at timestamp default current_timestamp on update current_timestamp
+                       updated_at timestamp
 );
 
 create table cart_items (
