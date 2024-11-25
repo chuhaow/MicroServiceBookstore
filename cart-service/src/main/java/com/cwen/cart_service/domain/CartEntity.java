@@ -11,6 +11,7 @@ public class CartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_id_generator")
     @SequenceGenerator(name = "cart_id_generator", sequenceName = "cart_id_seq")
+    @Column(name = "cart_id")
     private Long id;
 
     @Column(name = "user_id", nullable=false)

@@ -1,6 +1,8 @@
 package com.cwen.cart_service.web;
 
 import com.cwen.cart_service.domain.*;
+import com.cwen.cart_service.domain.models.AddToCartRequest;
+import com.cwen.cart_service.domain.models.AddToCartResponse;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,15 +22,13 @@ public class CartController {
         this.securityService = securityService;
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    CreateCartResponse createCart(@Valid @RequestBody CreateCartRequest request) {
-        return cartService.createCart(request);
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    UpdateCartResponse updateCart(@Valid @RequestBody UpdateCartRequest request){
-        return cartService.updateCart(request);
+    AddToCartResponse addToCart(@Valid @RequestBody AddToCartRequest request){
+        String user = securityService.getLoginUsername();
+        log.info("Add item to cart for: {}", user);
+
+        return cartService.addToCart(request, user);
     }
 }
