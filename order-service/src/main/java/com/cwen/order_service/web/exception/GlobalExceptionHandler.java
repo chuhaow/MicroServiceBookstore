@@ -20,7 +20,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final URI NOT_FOUND_TYPE = URI.create("https://api.bookstore.com/errors/not-found");
     private static final URI BAD_REQUEST = URI.create("https://api.bookstore.com/errors/bad-request");
     private static final URI ISE_FOUND_TYPE = URI.create("https://api.bookstore.com/errors/server-error");
-    private static final String SERVICE_NAME = "catalog-service";
+    private static final String SERVICE_NAME = "order-service";
 
     @ExceptionHandler(Exception.class)
     ProblemDetail handleGenericException(Exception ex) {
