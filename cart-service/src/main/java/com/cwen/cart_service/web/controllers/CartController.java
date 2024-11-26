@@ -1,13 +1,18 @@
-package com.cwen.cart_service.web;
+package com.cwen.cart_service.web.controllers;
 
 import com.cwen.cart_service.domain.*;
 import com.cwen.cart_service.domain.models.AddToCartRequest;
 import com.cwen.cart_service.domain.models.AddToCartResponse;
+import com.cwen.cart_service.domain.models.CartItemDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/carts")
@@ -28,7 +33,22 @@ public class CartController {
     AddToCartResponse addToCart(@Valid @RequestBody AddToCartRequest request){
         String user = securityService.getLoginUsername();
         log.info("Add item to cart for: {}", user);
-
         return cartService.addToCart(request, user);
     }
+
+    @GetMapping
+    List<CartItemDTO> getCartItems(){
+        String user = securityService.getLoginUsername();
+        log.info("Get cart items for: {}", user);
+        return cartService.getCartItems(user);
+    }
+
+    @DeleteMapping
+    ResponseEntity<String> deleteUserCart(){
+        String user = securityService.getLoginUsername();
+        log.info("Delete user cart for: {}", user);
+        cartService.deleteCart(user);
+        return ResponseEntity.ok("Cart deleted successfully.");
+    }
+
 }

@@ -3,6 +3,7 @@ package com.cwen.cart_service.domain;
 import com.cwen.cart_service.domain.models.AddToCartRequest;
 import com.cwen.cart_service.domain.models.AddToCartResponse;
 import com.cwen.cart_service.domain.models.CartItem;
+import com.cwen.cart_service.domain.models.CartItemDTO;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -62,5 +63,18 @@ public class CartService {
 
 
 
+    }
+
+    public List<CartItemDTO> getCartItems(String userId) {
+        Optional<CartEntity> cart = cartRepository.findByUserId(userId);
+        return cart.map(c -> c.getItems().stream()
+                        .map(item -> new CartItemDTO(item.getCode(), item.getName(), item.getPrice(), item.getQuantity()))
+                        .collect(Collectors.toList()))
+                .orElseGet(ArrayList::new);
+    }
+
+
+    public void deleteCart(String userId) {
+        cartRepository.deleteByUserId(userId);
     }
 }
