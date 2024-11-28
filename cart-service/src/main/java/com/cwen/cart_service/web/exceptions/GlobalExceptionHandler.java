@@ -21,7 +21,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final URI ISE_FOUND_TYPE = URI.create("https://api.bookstore.com/errors/server-error");
     private static final String SERVICE_NAME = "cart-service";
 
-    @ExceptionHandler(Exception.class)
+/*    @ExceptionHandler(Exception.class)
     ProblemDetail handleGenericException(Exception ex) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         problemDetail.setType(ISE_FOUND_TYPE);
@@ -31,7 +31,7 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
 
-    }
+    }*/
 
     @ExceptionHandler(InvalidCartRequestException.class)
     ProblemDetail handleInvalidOrderException(InvalidCartRequestException e){

@@ -1,6 +1,7 @@
 package com.cwen.bookstore_webapp.client;
 
 import com.cwen.bookstore_webapp.ApplicationProperties;
+import com.cwen.bookstore_webapp.client.cart.CartServiceClient;
 import com.cwen.bookstore_webapp.client.catalog.CatalogServiceClient;
 import com.cwen.bookstore_webapp.client.orders.OrderServiceClient;
 import org.springframework.context.annotation.Bean;
@@ -29,5 +30,12 @@ public class ClientsConfig {
         RestClient restClient = RestClient.create(applicationProperties.apiGatewayUrl());
         HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build();
         return factory.createClient(OrderServiceClient.class);
+    }
+
+    @Bean
+    CartServiceClient cartServiceClient() {
+        RestClient restClient = RestClient.create(applicationProperties.apiGatewayUrl());
+        HttpServiceProxyFactory factory = HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClient)).build();
+        return factory.createClient(CartServiceClient.class);
     }
 }

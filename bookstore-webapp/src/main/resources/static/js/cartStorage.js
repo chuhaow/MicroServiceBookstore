@@ -20,6 +20,32 @@ const addProductToCart = function(product){
     }
     localStorage.setItem(BOOKSTORE_STATE_KEY, JSON.stringify(cart))
     updateCartItemCount();
+    const cartItemData = {
+        "userId": "user",
+        "item": {
+            "code": product.code,
+            "name": product.name,
+            "price": product.price,
+            "quantity": 1
+        }
+    }
+    console.log(cartItemData)
+    $.ajax({
+        url: '/api/carts',
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data : JSON.stringify(cartItemData),
+        success: (resp) =>{
+
+            alert("Added to cart")
+
+        },
+        error:(err) =>{
+            console.log("Error adding to cart: ", err)
+        }
+    })
+
 }
 
 function updateCartItemCount(){
