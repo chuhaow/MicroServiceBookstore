@@ -20,8 +20,11 @@ document.addEventListener('alpine:init', () =>{
 
         init(){
             updateCartItemCount();
-            this.cart = getCart()
-            this.cart.totalAmount = getCartTotal();
+            getCart().then((cartData) => {
+                this.cart = cartData;
+            }).catch((error) => {
+                console.error("Failed to initialize cart:", error);
+            });
         },
 
         createOrder(){
@@ -48,10 +51,13 @@ document.addEventListener('alpine:init', () =>{
         clearCart(){
             deleteCart();
         },
-        updateItemQuantity(code, quantity) {
-            updateProductQuantity(code, quantity);
-            this.cart = getCart()
-            this.cart.totalAmount = getCartTotal();
+        async updateItemQuantity(product, quantity) {
+            try {
+                await updateProductQuantity(product, quantity);
+                this.cart = await getCart();
+            } catch (error) {
+                console.error("Failed to update item quantity and fetch cart:", error);
+            }
         }
     }))
 })

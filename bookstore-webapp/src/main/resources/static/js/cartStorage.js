@@ -1,25 +1,17 @@
 //TODO: This should store to a db instead of localStorage
-const BOOKSTORE_STATE_KEY = "BOOKSTORE_STATE"
+let cachedCartItemData = null
 
-const getCart = function(){
-    let cart = localStorage.getItem(BOOKSTORE_STATE_KEY)
-    if(!cart){
-        cart = JSON.stringify({items:[], totalAmount:0});
-        localStorage.setItem(BOOKSTORE_STATE_KEY, cart)
+function fetchCartItemData(){
+    if(cachedCartItemData){
+        return Promise.resolve()(cachedCartItemData)
     }
-    return JSON.parse(cart)
+    return $.getJSON("/api/carts").then(response =>{
+        cachedCartItemData = response
+        return response
+    })
 }
 
 const addProductToCart = function(product){
-    let cart = getCart();
-    let cartItem = cart.items.find(itemModel => itemModel.code === product.code);
-    if(cartItem){
-        cartItem.quantity = parseInt(cartItem.quantity) + 1;
-    }else{
-        cart.items.push(Object.assign({}, product,{quantity:1}))
-    }
-    localStorage.setItem(BOOKSTORE_STATE_KEY, JSON.stringify(cart))
-    updateCartItemCount();
     const cartItemData = {
         "userId": "user",
         "item": {
@@ -39,6 +31,7 @@ const addProductToCart = function(product){
         success: (resp) =>{
 
             alert("Added to cart")
+            updateCartItemCount();
 
         },
         error:(err) =>{
@@ -49,37 +42,54 @@ const addProductToCart = function(product){
 }
 
 function updateCartItemCount(){
-    let cart = getCart();
-    let count = 0;
-    cart.items.forEach(item =>{
-        count = count + item.quantity
-    })
-    $('#cart-item-count').text('(' + count + ')');
+    $.getJSON("/api/carts")
+        .done( (items) =>{
+            const count = items.reduce((total,item) => total + item.quantity,0)
+            $('#cart-item-count').text('(' + count + ')');
+        })
+        .fail( (error) =>{
+            console.error("Error fetching cart items:", error);
+            $('#cart-item-count').text('(' + 0 + ')');
+        })
 }
 
-const updateProductQuantity = function(code, quantity){
-    let cart = getCart();
-    if(quantity < 1){
-        cart.items = cart.items.filter(itemModel => itemModel.code !== code )
-    }else{
-        let cartItem = cart.items.find(itemModel => itemModel.code = code);
-        if(cartItem){
-            cartItem.quantity = parseInt(quantity);
-        }else{
-            console.log("Product code is not in Cart")
+async function getCart() {
+    const cart = { items: [], totalAmount: 0 };
+
+    try {
+        const items = await $.getJSON("/api/carts");
+        cart.items = items;
+        cart.totalAmount = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+    } catch (error) {
+        console.error("Error fetching cart items:", error);
+    }
+
+    return cart;
+}
+
+const updateProductQuantity = async function(product, quantity){
+    const cartItemData = {
+        "userId": "user",
+        "item": {
+            "code": product.code,
+            "name": product.name,
+            "price": product.price,
+            "quantity": quantity
         }
     }
-    localStorage.setItem(BOOKSTORE_STATE_KEY, JSON.stringify(cart));
-    updateCartItemCount();
-}
+    $.ajax({
+        url: '/api/carts',
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data : JSON.stringify(cartItemData),
+        success: (resp) =>{
 
-function getCartTotal() {
-    let cart = getCart();
-    let totalAmount = 0;
-    cart.items.forEach(item => {
-        totalAmount = totalAmount + (item.price * item.quantity);
-    });
-    return totalAmount;
+        },
+        error:(err) =>{
+            console.log("Error adding to cart: ", err)
+        }
+    })
 }
 
 const deleteCart = function() {
