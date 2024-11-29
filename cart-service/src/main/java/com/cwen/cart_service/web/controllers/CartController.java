@@ -1,9 +1,7 @@
 package com.cwen.cart_service.web.controllers;
 
 import com.cwen.cart_service.domain.*;
-import com.cwen.cart_service.domain.models.AddToCartRequest;
-import com.cwen.cart_service.domain.models.AddToCartResponse;
-import com.cwen.cart_service.domain.models.CartItemDTO;
+import com.cwen.cart_service.domain.models.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +32,14 @@ public class CartController {
         String user = securityService.getLoginUsername();
         log.info("Add item to cart for: {}", user);
         return cartService.addToCart(request, user);
+    }
+
+    @PostMapping("/remove")
+    @ResponseStatus(HttpStatus.OK)
+    RemoveFromCartResponse removeFromCart(@Valid @RequestBody RemoveFromCartRequest request){
+        String user = securityService.getLoginUsername();
+        log.info("Remove item from cart for: {}", user);
+        return cartService.removeFromCart(request, user);
     }
 
     @GetMapping

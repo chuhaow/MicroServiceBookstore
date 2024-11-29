@@ -1,9 +1,6 @@
 package com.cwen.cart_service.domain;
 
-import com.cwen.cart_service.domain.models.AddToCartRequest;
-import com.cwen.cart_service.domain.models.AddToCartResponse;
-import com.cwen.cart_service.domain.models.CartItem;
-import com.cwen.cart_service.domain.models.CartItemDTO;
+import com.cwen.cart_service.domain.models.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,14 +52,43 @@ public class CartService {
             cart.getItems().add(cartItemEntity);
         }
 
-
-
         cart.setUpdatedAt(LocalDateTime.now());
         CartEntity savedCart = cartRepository.save(cart);
         return new AddToCartResponse(savedCart.getId());
+    }
+
+    public RemoveFromCartResponse removeFromCart(@Valid RemoveFromCartRequest request, String user){
+        String userId = request.userId();
+        CartItem cartItem = request.item();
+
+        CartEntity cart = cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
 
 
+        Optional<CartItemEntity> itemToRemoveOpt = cart.getItems().stream()
+                .filter(item -> item.getCode().equals(cartItem.code()))
+                .findFirst();
 
+        if (itemToRemoveOpt.isPresent()) {
+            CartItemEntity itemToRemove = itemToRemoveOpt.get();
+
+            if (cartItem.quantity() > itemToRemove.getQuantity()) {
+                throw new IllegalArgumentException("Quantity to remove exceeds available quantity.");
+            }
+
+            itemToRemove.setQuantity(itemToRemove.getQuantity() - cartItem.quantity());
+
+            if (itemToRemove.getQuantity() == 0) {
+                cart.getItems().remove(itemToRemove);
+            }
+
+            cart.setUpdatedAt(LocalDateTime.now());
+            CartEntity savedCart = cartRepository.save(cart);
+
+            return new RemoveFromCartResponse(cartItem.code(), savedCart.getId());
+        } else {
+            throw new RuntimeException("Item not found in the cart for user ID: " + userId);
+        }
     }
 
     public List<CartItemDTO> getCartItems(String userId) {
