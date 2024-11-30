@@ -17,7 +17,7 @@ public class CartEntity {
     @Column(name = "user_id", nullable=false)
     private String userId;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart",orphanRemoval = true)
     private Set<CartItemEntity> items;
 
     @Column(name = "created_at", nullable = false, updatable = false)

@@ -34,12 +34,12 @@ public class CartController {
         return cartService.addToCart(request, user);
     }
 
-    @PostMapping("/remove")
+    @PostMapping("/update/quantity")
     @ResponseStatus(HttpStatus.OK)
-    RemoveFromCartResponse removeFromCart(@Valid @RequestBody RemoveFromCartRequest request){
+    UpdateItemQuantityResponse updateItemQuantity(@Valid @RequestBody UpdateItemQuantityRequest request){
         String user = securityService.getLoginUsername();
         log.info("Remove item from cart for: {}", user);
-        return cartService.removeFromCart(request, user);
+        return cartService.updateItemQuantity(request, user);
     }
 
     @GetMapping

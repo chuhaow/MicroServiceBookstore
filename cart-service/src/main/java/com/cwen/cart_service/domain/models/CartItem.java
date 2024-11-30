@@ -10,4 +10,4 @@ public record CartItem(
         @NotBlank(message = "Code is required") String code,
         @NotBlank(message = "Name is required") String name,
         @NotNull(message = "Price is required") BigDecimal price,
-        @NotNull @Min(1) Integer quantity) { }
+        @NotNull @Min(0) Integer quantity) { }

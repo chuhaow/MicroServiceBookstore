@@ -58,8 +58,10 @@ async function getCart() {
 
     try {
         const items = await $.getJSON("/api/carts");
+        items.sort((a, b) => a.name.localeCompare(b.name));
         cart.items = items;
         cart.totalAmount = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+        console.log("Getting cart")
     } catch (error) {
         console.error("Error fetching cart items:", error);
     }
@@ -68,6 +70,7 @@ async function getCart() {
 }
 
 const updateProductQuantity = async function(product, quantity){
+    console.log(quantity)
     const cartItemData = {
         "userId": "user",
         "item": {
@@ -77,19 +80,24 @@ const updateProductQuantity = async function(product, quantity){
             "quantity": quantity
         }
     }
-    $.ajax({
-        url: '/api/carts',
-        type: "POST",
-        dataType: "json",
-        contentType: "application/json",
-        data : JSON.stringify(cartItemData),
-        success: (resp) =>{
-
-        },
-        error:(err) =>{
-            console.log("Error adding to cart: ", err)
-        }
+    return new Promise((resolve, reject) =>{
+        $.ajax({
+            url: '/api/carts/update/quantity',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data : JSON.stringify(cartItemData),
+            success: (resp) =>{
+                console.log("New Quantity Count " + cartItemData.item.quantity + " items")
+                updateCartItemCount()
+            },
+            error:(err) =>{
+                console.log("Error Updating Cart: ", err)
+            }
+        })
     })
+
+
 }
 
 const deleteCart = function() {

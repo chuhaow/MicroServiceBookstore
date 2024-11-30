@@ -29,7 +29,8 @@
                             <td x-text="item.price">price</td>
                             <td>
                                 <input type="number" min="0" x-model="item.quantity"
-                                       @change="updateItemQuantity(item, $event.target.value)"/>
+                                       @change="updateItemQuantity(item, $event.target.value)"
+                                       />
                             </td>
                             <td x-text="item.quantity * item.price">subTotal</td>
                         </tr>

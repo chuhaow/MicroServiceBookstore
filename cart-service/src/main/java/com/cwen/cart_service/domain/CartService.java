@@ -57,7 +57,7 @@ public class CartService {
         return new AddToCartResponse(savedCart.getId());
     }
 
-    public RemoveFromCartResponse removeFromCart(@Valid RemoveFromCartRequest request, String user){
+    public UpdateItemQuantityResponse updateItemQuantity(@Valid UpdateItemQuantityRequest request, String user){
         String userId = request.userId();
         CartItem cartItem = request.item();
 
@@ -65,27 +65,23 @@ public class CartService {
                 .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
 
 
-        Optional<CartItemEntity> itemToRemoveOpt = cart.getItems().stream()
+        Optional<CartItemEntity> itemToUpdateOpt = cart.getItems().stream()
                 .filter(item -> item.getCode().equals(cartItem.code()))
                 .findFirst();
 
-        if (itemToRemoveOpt.isPresent()) {
-            CartItemEntity itemToRemove = itemToRemoveOpt.get();
+        if (itemToUpdateOpt.isPresent()) {
+            CartItemEntity itemToUpdate = itemToUpdateOpt.get();
 
-            if (cartItem.quantity() > itemToRemove.getQuantity()) {
-                throw new IllegalArgumentException("Quantity to remove exceeds available quantity.");
-            }
-
-            itemToRemove.setQuantity(itemToRemove.getQuantity() - cartItem.quantity());
-
-            if (itemToRemove.getQuantity() == 0) {
-                cart.getItems().remove(itemToRemove);
+            if (cartItem.quantity() == 0) {
+                cart.getItems().remove(itemToUpdate);
+            }else{
+                itemToUpdate.setQuantity(cartItem.quantity());
             }
 
             cart.setUpdatedAt(LocalDateTime.now());
             CartEntity savedCart = cartRepository.save(cart);
 
-            return new RemoveFromCartResponse(cartItem.code(), savedCart.getId());
+            return new UpdateItemQuantityResponse(cartItem.code(), savedCart.getId());
         } else {
             throw new RuntimeException("Item not found in the cart for user ID: " + userId);
         }

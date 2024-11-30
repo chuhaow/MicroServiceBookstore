@@ -18,6 +18,7 @@ document.addEventListener('alpine:init', () =>{
         },
         formValidationData: {deliverableCountries:["Canada", "Japan", "USA", "UK"]},
 
+
         init(){
             updateCartItemCount();
             getCart().then((cartData) => {
@@ -51,10 +52,11 @@ document.addEventListener('alpine:init', () =>{
         clearCart(){
             deleteCart();
         },
-        async updateItemQuantity(product, quantity) {
+        async updateItemQuantity(product, targetQuantity) {
             try {
-                await updateProductQuantity(product, quantity);
+                await updateProductQuantity(product, targetQuantity<0 ? 0 : targetQuantity);
                 this.cart = await getCart();
+
             } catch (error) {
                 console.error("Failed to update item quantity and fetch cart:", error);
             }
