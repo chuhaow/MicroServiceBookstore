@@ -13,7 +13,6 @@ function fetchCartItemData(){
 
 const addProductToCart = function(product){
     const cartItemData = {
-        "userId": "user",
         "item": {
             "code": product.code,
             "name": product.name,
@@ -29,10 +28,7 @@ const addProductToCart = function(product){
         contentType: "application/json",
         data : JSON.stringify(cartItemData),
         success: (resp) =>{
-
-            alert("Added to cart")
             updateCartItemCount();
-
         },
         error:(err) =>{
             console.log("Error adding to cart: ", err)
@@ -72,7 +68,6 @@ async function getCart() {
 const updateProductQuantity = async function(product, quantity){
     console.log(quantity)
     const cartItemData = {
-        "userId": "user",
         "item": {
             "code": product.code,
             "name": product.name,
@@ -101,6 +96,16 @@ const updateProductQuantity = async function(product, quantity){
 }
 
 const deleteCart = function() {
-    localStorage.removeItem(BOOKSTORE_STATE_KEY)
-    updateCartItemCount();
+    $.ajax({
+        url: '/api/carts',
+        type: "DELETE",
+        success: (resp) =>{
+            console.log("Emptied cart")
+            updateCartItemCount()
+        },
+        error:(err) =>{
+            console.log("Error Emptying Cart: ", err)
+        }
+    })
+
 }

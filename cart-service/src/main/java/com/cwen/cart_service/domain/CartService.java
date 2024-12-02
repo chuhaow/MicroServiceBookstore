@@ -23,13 +23,12 @@ public class CartService {
     }
 
     public AddToCartResponse addToCart(@Valid AddToCartRequest request, String user) {
-        String userId = request.userId();
         CartItem cartItem = request.item();
 
-        CartEntity cart = cartRepository.findByUserId(userId)
+        CartEntity cart = cartRepository.findByUserId(user)
                 .orElseGet( () -> {
                     CartEntity newCart = new CartEntity();
-                    newCart.setUserId(userId);
+                    newCart.setUserId(user);
                     newCart.setCreatedAt(LocalDateTime.now());
                     newCart.setItems(new HashSet<>());
                     return newCart;
@@ -58,11 +57,10 @@ public class CartService {
     }
 
     public UpdateItemQuantityResponse updateItemQuantity(@Valid UpdateItemQuantityRequest request, String user){
-        String userId = request.userId();
         CartItem cartItem = request.item();
 
-        CartEntity cart = cartRepository.findByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + userId));
+        CartEntity cart = cartRepository.findByUserId(user)
+                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + user));
 
 
         Optional<CartItemEntity> itemToUpdateOpt = cart.getItems().stream()
@@ -83,7 +81,7 @@ public class CartService {
 
             return new UpdateItemQuantityResponse(cartItem.code(), savedCart.getId());
         } else {
-            throw new RuntimeException("Item not found in the cart for user ID: " + userId);
+            throw new RuntimeException("Item not found in the cart for user ID: " + user);
         }
     }
 
