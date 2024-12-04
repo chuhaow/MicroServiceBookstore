@@ -68,13 +68,10 @@ async function getCart() {
 const updateProductQuantity = async function(product, quantity){
     console.log(quantity)
     const cartItemData = {
-        "item": {
-            "code": product.code,
-            "name": product.name,
-            "price": product.price,
-            "quantity": quantity
-        }
+        "itemCode": product.code,
+        "quantity": quantity
     }
+    console.log(cartItemData)
     return new Promise((resolve, reject) =>{
         $.ajax({
             url: '/api/carts/update/quantity',
@@ -83,7 +80,7 @@ const updateProductQuantity = async function(product, quantity){
             contentType: "application/json",
             data : JSON.stringify(cartItemData),
             success: (resp) =>{
-                console.log("New Quantity Count " + cartItemData.item.quantity + " items")
+                console.log("New Quantity Count " + cartItemData.quantity + " items")
                 updateCartItemCount()
             },
             error:(err) =>{

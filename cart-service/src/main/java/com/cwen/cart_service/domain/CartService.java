@@ -1,5 +1,6 @@
 package com.cwen.cart_service.domain;
 
+import com.cwen.cart_service.domain.exceptions.ItemNotFoundInCartException;
 import com.cwen.cart_service.domain.models.*;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -57,31 +58,32 @@ public class CartService {
     }
 
     public UpdateItemQuantityResponse updateItemQuantity(@Valid UpdateItemQuantityRequest request, String user){
-        CartItem cartItem = request.item();
+        String code = request.itemCode();
+        Integer quantity = request.quantity();
 
         CartEntity cart = cartRepository.findByUserId(user)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + user));
 
 
         Optional<CartItemEntity> itemToUpdateOpt = cart.getItems().stream()
-                .filter(item -> item.getCode().equals(cartItem.code()))
+                .filter(item -> item.getCode().equals(code))
                 .findFirst();
 
         if (itemToUpdateOpt.isPresent()) {
             CartItemEntity itemToUpdate = itemToUpdateOpt.get();
 
-            if (cartItem.quantity() == 0) {
+            if (quantity == 0) {
                 cart.getItems().remove(itemToUpdate);
             }else{
-                itemToUpdate.setQuantity(cartItem.quantity());
+                itemToUpdate.setQuantity(quantity);
             }
 
             cart.setUpdatedAt(LocalDateTime.now());
             CartEntity savedCart = cartRepository.save(cart);
 
-            return new UpdateItemQuantityResponse(cartItem.code(), savedCart.getId());
+            return new UpdateItemQuantityResponse(code, savedCart.getId());
         } else {
-            throw new RuntimeException("Item not found in the cart for user ID: " + user);
+            throw new ItemNotFoundInCartException("Item not found in the cart for user ID: " + user);
         }
     }
 
