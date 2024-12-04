@@ -2,6 +2,7 @@ package com.cwen.cart_service.web.controllers;
 
 import com.cwen.cart_service.domain.*;
 import com.cwen.cart_service.domain.models.*;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/carts")
+@SecurityRequirement(name = "security_auth")
 public class CartController {
     private static final Logger log = LoggerFactory.getLogger(CartController.class);
 
