@@ -25,7 +25,7 @@ class TestcontainersConfiguration {
 	KeycloakContainer keycloak(DynamicPropertyRegistry registry){
 		var keycloak = new KeycloakContainer(KEYCLOAK_IMAGE)
 				.withRealmImportFile(realmImportFile)
-				.withStartupTimeout(java.time.Duration.ofMinutes(5));
+				.withStartupTimeout(java.time.Duration.ofMinutes(10));
 		registry.add(
 				"spring.security.oauth2.resourceserver.jwt.issuer-uri",
 				() -> keycloak.getAuthServerUrl() + "/realms/" + realmName);
