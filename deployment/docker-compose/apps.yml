@@ -114,6 +114,7 @@ services:
       - DB_URL=jdbc:postgresql://cart-db:5432/postgres
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
+      - OAUTH2_SERVER_URL=http://keycloak:9191
     ports:
       - "8084:8084"
     restart: unless-stopped
