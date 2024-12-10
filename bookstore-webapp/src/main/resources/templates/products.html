@@ -3,7 +3,7 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaft.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 
 
 <body>
@@ -31,7 +31,14 @@
                         </div>
                         <div class="card-footer" style="background: transparent; border-top: 0;">
                             <div class="d-grid gap-2">
-                                <button class="btn btn-primary" @click="addToCart(product)">
+                                <a class="btn btn-primary"
+                                   sec:authorize="!isAuthenticated()"
+                                   href="/oauth2/authorization/bookstore-webapp">
+                                    Add To Cart
+                                </a>
+                                <button class="btn btn-primary"
+                                        sec:authorize="isAuthenticated()"
+                                        @click="addToCart(product)">
                                     Add To Cart
                                 </button>
                             </div>

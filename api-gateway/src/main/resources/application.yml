@@ -35,6 +35,12 @@ spring:
             - Path=/orders/**
           filters:
             - RewritePath=/orders/?(?<segment>.*), /${segment}
+        - id: cart-service
+          uri: ${CART_SERVICE_URL:http://localhost:8084}
+          predicates:
+            - Path=/cart/**
+          filters:
+            - RewritePath=/cart/?(?<segment>.*), /${segment}
         - id: openapi
           uri: http://localhost:${server.port}
           predicates:
@@ -51,5 +57,4 @@ spring:
 springdoc:
   swagger-ui:
     use-root-path: true
-
 

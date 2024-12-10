@@ -6,6 +6,7 @@ document.addEventListener('alpine:init', ()=>{
         },
         init(){
             this.loadProducts(pageNo)
+            updateCartItemCount();
         },
         loadProducts(pageNo){
             console.log("loading products")
@@ -15,7 +16,9 @@ document.addEventListener('alpine:init', ()=>{
             })
         },
         addToCart(product){
+            console.log(product)
             console.log("Adding "+ product.name)
+            /**/
             addProductToCart(product)
         }
     }))
