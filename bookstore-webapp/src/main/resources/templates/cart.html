@@ -53,6 +53,7 @@
                                id="customerName"
                                name="customerName"
                                x-model="orderForm.customer.name"
+                               placeholder="Name"
                                value=""
                                required/>
                     </div>
@@ -62,15 +63,18 @@
                                id="customerEmail"
                                name="customerEmail"
                                x-model="orderForm.customer.email"
+                               placeholder="Email"
                                value=""
                                required>
                     </div>
                     <div class="col-md-6">
                         <label for="customerPhone" class="form-label">Phone Number</label>
-                        <input type="text" class="form-control"
+                        <input type="tel" class="form-control"
                                id="customerPhone"
                                name="customerPhone"
                                x-model="orderForm.customer.phone"
+                               pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                               placeholder="000-000-0000"
                                value=""
                                required>
                     </div>
@@ -80,6 +84,7 @@
                                id="deliveryAddressLine1"
                                name="deliveryAddressLine1"
                                x-model="orderForm.address.addressLine1"
+                               placeholder="Delivery Address"
                                required/>
                     </div>
                     <div class="col-6">
@@ -95,6 +100,7 @@
                                id="deliveryAddressCity"
                                name="deliveryAddressCity"
                                x-model="orderForm.address.city"
+                               placeholder="City"
                                required/>
                     </div>
                     <div class="col-6">
@@ -103,6 +109,7 @@
                                id="deliveryAddressState"
                                name="deliveryAddressState"
                                x-model="orderForm.address.state"
+                               placeholder="State"
                                required/>
                     </div>
                     <div class="col-6">
@@ -111,6 +118,7 @@
                                id="deliveryAddressZipCode"
                                name="deliveryAddressZipCode"
                                x-model="orderForm.address.zipCode"
+                               placeholder="ZipCode"
                                required/>
                     </div>
                     <div class="col-6">
@@ -125,11 +133,7 @@
                             </template>
 
                         </select>
-                        <!--<input class="form-control"
-                               id="deliveryAddressCountry"
-                               name="deliveryAddressCountry"
-                               x-model="orderForm.address.country"
-                               required/>-->
+
                     </div>
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary">Place Order</button>
