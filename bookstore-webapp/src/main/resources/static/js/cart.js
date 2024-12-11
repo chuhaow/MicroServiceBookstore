@@ -3,17 +3,17 @@ document.addEventListener('alpine:init', () =>{
         cart: {items: [], totalAmount: 0},
         orderForm:{
             customer:{
-                name: "John",
-                email: "email@email.com",
-                phone: "11111111111"
+                name: "",
+                email: "",
+                phone: ""
             },
             address:{
-                addressLine1: "123 street",
+                addressLine1: "",
                 addressLine2: "",
-                city: "City",
-                state: "state",
-                zipcode: "2160033",
-                country: "Country"
+                city: "",
+                state: "",
+                zipcode: "",
+                country: ""
             }
         },
         formValidationData: {deliverableCountries:["Canada", "Japan", "USA", "UK"]},
