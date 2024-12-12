@@ -27,7 +27,7 @@
   "oauth2DevicePollingInterval" : 5,
   "enabled" : true,
   "sslRequired" : "external",
-  "registrationAllowed" : false,
+  "registrationAllowed" : true,
   "registrationEmailAsUsername" : false,
   "rememberMe" : false,
   "verifyEmail" : false,
@@ -1304,7 +1304,7 @@
       "subType" : "authenticated",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "oidc-full-name-mapper", "oidc-address-mapper", "saml-user-property-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-usermodel-attribute-mapper", "saml-role-list-mapper", "oidc-usermodel-property-mapper", "saml-user-attribute-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-usermodel-attribute-mapper", "oidc-usermodel-property-mapper", "saml-user-property-mapper", "saml-role-list-mapper", "oidc-sha256-pairwise-sub-mapper", "oidc-full-name-mapper", "oidc-address-mapper", "saml-user-attribute-mapper" ]
       }
     }, {
       "id" : "5ae11bf4-c9ef-490d-b701-706f5a1426bf",
@@ -1320,7 +1320,7 @@
       "subType" : "anonymous",
       "subComponents" : { },
       "config" : {
-        "allowed-protocol-mapper-types" : [ "saml-role-list-mapper", "saml-user-property-mapper", "oidc-address-mapper", "saml-user-attribute-mapper", "oidc-full-name-mapper", "oidc-usermodel-property-mapper", "oidc-usermodel-attribute-mapper", "oidc-sha256-pairwise-sub-mapper" ]
+        "allowed-protocol-mapper-types" : [ "oidc-usermodel-attribute-mapper", "oidc-sha256-pairwise-sub-mapper", "saml-user-property-mapper", "saml-user-attribute-mapper", "saml-role-list-mapper", "oidc-usermodel-property-mapper", "oidc-full-name-mapper", "oidc-address-mapper" ]
       }
     }, {
       "id" : "c4a2fe4a-1ec2-475d-8c32-1598ee114dc4",

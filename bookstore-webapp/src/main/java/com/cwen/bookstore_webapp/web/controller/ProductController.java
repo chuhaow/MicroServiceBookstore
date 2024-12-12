@@ -19,10 +19,6 @@ public class ProductController {
         this.catalogServiceClient = catalogServiceClient;
     }
 
-    @GetMapping
-    String index(){
-        return "redirect:/products";
-    }
 
     @GetMapping("/products")
     String productsPage(@RequestParam(name = "page", defaultValue = "1")int pageNo,
