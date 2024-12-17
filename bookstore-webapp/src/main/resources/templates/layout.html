@@ -27,6 +27,7 @@
                     aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item" sec:authorize="isAuthenticated()">
@@ -44,10 +45,35 @@
                             Login
                         </a>
                     </li>
-                    <li class="nav-item" sec:authorize="isAuthenticated()">
-                        <a class="nav-link" href="/logout">
-                            Logout
+                    <li class="nav-item" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link" th:href="${registrationUrl}">
+                            Register
                         </a>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-circle me-2">
+                                <span th:text="${username.substring(0, 1).toUpperCase()}">N</span>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="userDropdown" style="width: 250px;">
+                            <li class="d-flex align-items-center mb-3">
+                                <div class="user-circle me-2">
+                                    <span th:text="${username.substring(0, 1).toUpperCase()}">N</span>
+                                </div>
+                                <div>
+                                    <h6 class="mb-0" th:text="${username}">User Name</h6>
+                                    <small th:text="${userEmail}">user.email@example.com</small>
+                                </div>
+                            </li>
+
+                            <li>
+                                <a class="btn btn-outline-danger w-100" href="/logout" th:href="@{/logout}">
+                                    Logout
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
