@@ -115,6 +115,7 @@ services:
       - DB_USERNAME=postgres
       - DB_PASSWORD=password
       - OAUTH2_SERVER_URL=http://keycloak:9191
+      - CART_CATALOG_SERVICE_URL=http://api-gateway:8989/catalog
     ports:
       - "8084:8084"
     restart: unless-stopped
