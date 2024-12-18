@@ -2,6 +2,7 @@ package com.cwen.cart_service.web.exceptions;
 
 
 import com.cwen.cart_service.domain.exceptions.InvalidCartRequestException;
+import com.cwen.cart_service.domain.exceptions.InvalidItemException;
 import com.cwen.cart_service.domain.exceptions.ItemNotFoundInCartException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.*;
@@ -55,6 +56,18 @@ class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
     }
+
+    @ExceptionHandler(InvalidItemException.class)
+    ProblemDetail handleInvalidOrderException(InvalidItemException e){
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+        problemDetail.setType(BAD_REQUEST);
+        problemDetail.setTitle("Invalid Request");
+        problemDetail.setProperty("service", SERVICE_NAME);
+        problemDetail.setProperty("error_category", "Generic");
+        problemDetail.setProperty("timestamp", Instant.now());
+        return problemDetail;
+    }
+
 
     @Override
     @NotNull
