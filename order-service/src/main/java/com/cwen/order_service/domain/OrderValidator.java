@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Component
 public class OrderValidator {
-    private static final Logger log = LoggerFactory.getLogger(OrderService.class);
+    private static final Logger log = LoggerFactory.getLogger(OrderValidator.class);
 
     private final ProductServiceClient productServiceClient;
 
