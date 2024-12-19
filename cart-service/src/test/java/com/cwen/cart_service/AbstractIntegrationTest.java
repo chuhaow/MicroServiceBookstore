@@ -47,6 +47,7 @@ public abstract class AbstractIntegrationTest {
     static void beforeAll(){
         wiremockServer.start();
         configureFor(wiremockServer.getHost(), wiremockServer.getPort());
+        System.out.println("WireMock started at: " + wiremockServer.getBaseUrl());
 
     }
 
