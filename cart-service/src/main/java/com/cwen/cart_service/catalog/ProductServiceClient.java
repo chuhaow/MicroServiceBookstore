@@ -2,10 +2,11 @@ package com.cwen.cart_service.catalog;
 
 
 import com.cwen.cart_service.catalog.Models.Product;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
@@ -21,8 +22,8 @@ public class ProductServiceClient {
         this.restTemplate = restTemplate;
     }
 
-    //@CircuitBreaker(name = "catalog-service")
-    //@Retry(name = "catalog-service", fallbackMethod = "getProductByCodeFallback")
+    @CircuitBreaker(name = "catalog-service")
+    @Retry(name = "catalog-service", fallbackMethod = "getProductByCodeFallback")
     public Optional<Product> getProductByCode(String code){
         log.info("Fetching Product for code: {}", code);
         try {
