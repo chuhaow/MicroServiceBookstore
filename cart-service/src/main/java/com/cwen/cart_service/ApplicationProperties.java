@@ -3,16 +3,6 @@ package com.cwen.cart_service;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "cart")
-public class ApplicationProperties {
-    private String catalogServiceUrl;
-
-
-    public String catalogServiceUrl() {
-        return catalogServiceUrl;
-    }
-
-
-    public void setCatalogServiceUrl(String catalogServiceUrl) {
-        this.catalogServiceUrl = catalogServiceUrl;
-    }
-}
+public record ApplicationProperties(
+        String catalogServiceUrl
+) { }
