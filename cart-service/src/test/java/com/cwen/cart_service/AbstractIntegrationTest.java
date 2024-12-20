@@ -35,11 +35,12 @@ public abstract class AbstractIntegrationTest {
     private static final String USERNAME = "test";
     private static final String PASSWORD = "test";
 
+    @LocalServerPort
+    private int port;
+
     @Autowired
     OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
 
-    @LocalServerPort
-    private int port;
 
     public static WireMockContainer wiremockServer = new WireMockContainer("wiremock/wiremock:3.5.2-alpine");
 
@@ -47,14 +48,7 @@ public abstract class AbstractIntegrationTest {
     static void beforeAll(){
         wiremockServer.start();
         configureFor(wiremockServer.getHost(), wiremockServer.getPort());
-        System.out.println("WireMock started at: " + wiremockServer.getBaseUrl());
-
-    }
-
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
+        System.out.println(wiremockServer.getBaseUrl());
     }
 
     @AfterAll
@@ -65,6 +59,11 @@ public abstract class AbstractIntegrationTest {
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("cart.catalog-service-url", wiremockServer::getBaseUrl);
+    }
+
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = port;
     }
 
     protected static void mockGetProductByCode(String code, String name, BigDecimal price){
@@ -82,6 +81,7 @@ public abstract class AbstractIntegrationTest {
                         }
                         """.formatted(code,name, price.doubleValue()))));
     }
+
 
     protected String getToken() {
         RestTemplate restTemplate = new RestTemplate();
