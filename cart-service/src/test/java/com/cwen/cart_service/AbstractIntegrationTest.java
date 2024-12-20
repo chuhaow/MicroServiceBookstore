@@ -46,7 +46,9 @@ public abstract class AbstractIntegrationTest {
 
     @BeforeAll
     static void beforeAll(){
-        wiremockServer.start();
+        if (!wiremockServer.isRunning()) {
+            wiremockServer.start();
+        }
         configureFor(wiremockServer.getHost(), wiremockServer.getPort());
         System.out.println("InBeforeAll:" + wiremockServer.getBaseUrl());
     }
