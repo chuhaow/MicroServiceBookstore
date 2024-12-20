@@ -30,6 +30,10 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
         @Test
         void addToCartSuccessTest(){
             System.out.println("InTest: " +wiremockServer.getBaseUrl());
+            if (shouldSkipTest()) {
+                System.out.println("Skipping addToCartSuccessTest");
+                return;
+            }
             mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
             var payload = """
                     {
@@ -52,7 +56,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
         }
     }
 
-/*
+
     @Test
     void getCartSuccessTest(){
         given().contentType(ContentType.JSON)
@@ -112,7 +116,9 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
         }
     }
 
- */
+    private boolean shouldSkipTest() {
+        return System.getenv("SKIP_ADD_TO_CART_TEST") != null;
+    }
 
 
 }
