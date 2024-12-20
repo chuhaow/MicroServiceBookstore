@@ -55,6 +55,7 @@ public abstract class AbstractIntegrationTest {
 
     @AfterAll
     static void afterAll() {
+        System.out.println("InAfterAll:" + wiremockServer.getBaseUrl());
         wiremockServer.stop();
     }
 
