@@ -14,6 +14,7 @@ import java.time.Duration;
 public class CatalogServiceConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder, ApplicationProperties applicationProperties) {
+        System.out.println("Inside restTemplate: "+applicationProperties.catalogServiceUrl());
         return restTemplateBuilder
                 .rootUri(applicationProperties.catalogServiceUrl())
                 .connectTimeout(Duration.ofSeconds(5))
