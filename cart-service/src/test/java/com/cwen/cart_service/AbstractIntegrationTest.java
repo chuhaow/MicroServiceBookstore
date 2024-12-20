@@ -42,13 +42,13 @@ public abstract class AbstractIntegrationTest {
     OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
 
 
-    public static WireMockContainer wiremockServer = new WireMockContainer("wiremock/wiremock:3.5.2-alpine");
+    public static WireMockContainer wiremockServer = new WireMockContainer("wiremock/wiremock:3.5.2-alpine").withReuse(true);
 
     @BeforeAll
     static void beforeAll(){
         wiremockServer.start();
         configureFor(wiremockServer.getHost(), wiremockServer.getPort());
-        System.out.println(wiremockServer.getBaseUrl());
+        System.out.println("InBeforeAll:" + wiremockServer.getBaseUrl());
     }
 
     @AfterAll
