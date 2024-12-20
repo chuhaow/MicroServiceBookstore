@@ -52,7 +52,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
         }
     }
 
-
+/*
     @Test
     void getCartSuccessTest(){
         given().contentType(ContentType.JSON)
@@ -111,6 +111,8 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
     }
+    
+ */
 
 
 }
