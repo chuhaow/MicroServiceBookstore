@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +42,12 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
 
+    @Autowired
+    private ApplicationProperties applicationProperties;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
 
     public static WireMockContainer wiremockServer = new WireMockContainer("wiremock/wiremock:3.5.2-alpine").withReuse(true);
 
@@ -67,6 +74,13 @@ public abstract class AbstractIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+        String baseUrl = wiremockServer.getBaseUrl();
+        applicationProperties.setCatalogServiceUrl(baseUrl);
+
+
+        restTemplate = new RestTemplateBuilder()
+                .rootUri(applicationProperties.getCatalogServiceUrl()) 
+                .build();
     }
 
     protected static void mockGetProductByCode(String code, String name, BigDecimal price){
