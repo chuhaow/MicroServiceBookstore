@@ -7,7 +7,7 @@ public class ApplicationProperties {
     private String catalogServiceUrl;
 
 
-    public String getCatalogServiceUrl() {
+    public String catalogServiceUrl() {
         return catalogServiceUrl;
     }
 

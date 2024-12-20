@@ -79,7 +79,7 @@ public abstract class AbstractIntegrationTest {
 
 
         restTemplate = new RestTemplateBuilder()
-                .rootUri(applicationProperties.getCatalogServiceUrl()) 
+                .rootUri(applicationProperties.catalogServiceUrl())
                 .build();
     }
 
