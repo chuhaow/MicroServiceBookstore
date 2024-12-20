@@ -20,6 +20,8 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.wiremock.integrations.testcontainers.WireMockContainer;
 
 import java.math.BigDecimal;
@@ -29,6 +31,7 @@ import static java.util.Collections.singletonList;
 
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 public abstract class AbstractIntegrationTest {
     private static final String CLIENT_ID = "bookstore-webapp";
     private static final String CLIENT_SECRET = "YMtmsNEPbq6v5jLZzkRi72hhAomOsVQ0";
@@ -41,7 +44,7 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     OAuth2ResourceServerProperties oAuth2ResourceServerProperties;
 
-
+    @Container
     public static final WireMockContainer wiremockServer = new WireMockContainer("wiremock/wiremock:3.5.2-alpine").withReuse(true);
 
     @BeforeAll
