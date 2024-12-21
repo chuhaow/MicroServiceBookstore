@@ -1,27 +1,43 @@
 package com.cwen.cart_service.controllers;
 
 import com.cwen.cart_service.AbstractIntegrationTest;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.math.BigDecimal;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 @Sql("/test-cart.sql")
 public class CartControllerIntegrationTest extends AbstractIntegrationTest {
+    @Autowired
+    private CircuitBreakerRegistry circuitBreakerRegistry;
+
+    @BeforeEach
+    public void setUp() {
+        circuitBreakerRegistry.circuitBreaker("catalog-service").reset();
+    }
+
 
     @Nested
     class AddToCartTest{
         @Test
         void addToCartSuccessTest(){
+            System.out.println("InTest: " +wiremockServer.getBaseUrl());
+
+            mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
             var payload = """
                     {
                         "item": {
-                            "code": "P101",
-                            "name": "A item",
-                            "price": 30.30,
+                            "code": "P100",
+                            "name": "Product 1",
+                            "price": 34.00,
                             "quantity": 1
                         }
                     }""";
@@ -36,6 +52,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                     .body("cartId", notNullValue());
         }
     }
+
 
     @Test
     void getCartSuccessTest(){
@@ -94,6 +111,10 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                     .then()
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
+    }
+
+    private boolean shouldSkipTest() {
+        return System.getenv("SKIP_ADD_TO_CART_TEST") != null;
     }
 
 

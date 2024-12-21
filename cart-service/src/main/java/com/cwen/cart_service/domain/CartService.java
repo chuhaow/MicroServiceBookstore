@@ -18,12 +18,15 @@ public class CartService {
     private static Logger logger = LoggerFactory.getLogger(CartService.class);
 
     private final CartRepository cartRepository;
+    private final CartItemValidator cartItemValidator;
 
-    public CartService(final CartRepository cartRepository) {
+    public CartService(final CartRepository cartRepository, final CartItemValidator cartItemValidator) {
         this.cartRepository = cartRepository;
+        this.cartItemValidator = cartItemValidator;
     }
 
     public AddToCartResponse addToCart(@Valid AddToCartRequest request, String user) {
+        cartItemValidator.validate(request);
         CartItem cartItem = request.item();
 
         CartEntity cart = cartRepository.findByUserId(user)
