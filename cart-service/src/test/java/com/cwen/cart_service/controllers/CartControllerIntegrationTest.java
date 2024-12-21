@@ -30,10 +30,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
         @Test
         void addToCartSuccessTest(){
             System.out.println("InTest: " +wiremockServer.getBaseUrl());
-            if (shouldSkipTest()) {
-                System.out.println("Skipping addToCartSuccessTest");
-                return;
-            }
+
             mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
             var payload = """
                     {
