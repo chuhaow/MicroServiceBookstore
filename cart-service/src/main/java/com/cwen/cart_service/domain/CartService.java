@@ -2,6 +2,7 @@ package com.cwen.cart_service.domain;
 
 import com.cwen.cart_service.domain.exceptions.ItemNotFoundInCartException;
 import com.cwen.cart_service.domain.models.*;
+import com.cwen.cart_service.domain.repositories.AuthUserCartRepository;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,11 @@ import java.util.stream.Collectors;
 public class CartService {
     private static Logger logger = LoggerFactory.getLogger(CartService.class);
 
-    private final CartRepository cartRepository;
+    private final AuthUserCartRepository authUserCartRepository;
     private final CartItemValidator cartItemValidator;
 
-    public CartService(final CartRepository cartRepository, final CartItemValidator cartItemValidator) {
-        this.cartRepository = cartRepository;
+    public CartService(final AuthUserCartRepository authUserCartRepository, final CartItemValidator cartItemValidator) {
+        this.authUserCartRepository = authUserCartRepository;
         this.cartItemValidator = cartItemValidator;
     }
 
@@ -29,7 +30,7 @@ public class CartService {
         cartItemValidator.validate(request);
         CartItem cartItem = request.item();
 
-        CartEntity cart = cartRepository.findByUserId(user)
+        CartEntity cart = authUserCartRepository.findByUserId(user)
                 .orElseGet( () -> {
                     CartEntity newCart = new CartEntity();
                     newCart.setUserId(user);
@@ -56,7 +57,7 @@ public class CartService {
         }
 
         cart.setUpdatedAt(LocalDateTime.now());
-        CartEntity savedCart = cartRepository.save(cart);
+        CartEntity savedCart = authUserCartRepository.save(cart);
         return new AddToCartResponse(savedCart.getId());
     }
 
@@ -64,7 +65,7 @@ public class CartService {
         String code = request.itemCode();
         Integer quantity = request.quantity();
 
-        CartEntity cart = cartRepository.findByUserId(user)
+        CartEntity cart = authUserCartRepository.findByUserId(user)
                 .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + user));
 
 
@@ -82,7 +83,7 @@ public class CartService {
             }
 
             cart.setUpdatedAt(LocalDateTime.now());
-            CartEntity savedCart = cartRepository.save(cart);
+            CartEntity savedCart = authUserCartRepository.save(cart);
 
             return new UpdateItemQuantityResponse(code, savedCart.getId());
         } else {
@@ -91,7 +92,7 @@ public class CartService {
     }
 
     public List<CartItemDTO> getCartItems(String userId) {
-        Optional<CartEntity> cart = cartRepository.findByUserId(userId);
+        Optional<CartEntity> cart = authUserCartRepository.findByUserId(userId);
         return cart.map(c -> c.getItems().stream()
                         .map(item -> new CartItemDTO(item.getCode(), item.getName(), item.getPrice(), item.getQuantity()))
                         .collect(Collectors.toList()))
@@ -100,6 +101,6 @@ public class CartService {
 
 
     public void deleteCart(String userId) {
-        cartRepository.deleteByUserId(userId);
+        authUserCartRepository.deleteByUserId(userId);
     }
 }
