@@ -14,22 +14,12 @@ public class DataSourceConfig {
     @Primary
     @ConfigurationProperties(prefix = "spring.datasource.auth")
     public DataSource authDataSource() {
-        return DataSourceBuilder.create()
-                .url("jdbc:postgresql://localhost:45432/postgres")
-                .username("postgres")
-                .password("password")
-                .driverClassName("org.postgresql.Driver")
-                .build();
+        return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "guestDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.guest")
     public DataSource guestDataSource() {
-        return DataSourceBuilder.create()
-                .url("jdbc:postgresql://localhost:55432/postgres")
-                .username("postgres")
-                .password("password")
-                .driverClassName("org.postgresql.Driver")
-                .build();
+        return DataSourceBuilder.create().build();
     }
 }

@@ -2,7 +2,7 @@ package com.cwen.cart_service.domain;
 
 import com.cwen.cart_service.domain.exceptions.ItemNotFoundInCartException;
 import com.cwen.cart_service.domain.models.*;
-import com.cwen.cart_service.domain.repositories.AuthUserCartRepository;
+import com.cwen.cart_service.domain.repositories.auth.AuthUserCartRepository;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

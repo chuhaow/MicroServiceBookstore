@@ -1,4 +1,4 @@
-package com.cwen.cart_service.domain.repositories;
+package com.cwen.cart_service.domain.repositories.guest;
 
 import com.cwen.cart_service.domain.CartEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -20,15 +20,17 @@ import javax.sql.DataSource;
 public class EntityManagerConfig {
 
     @Primary
-    @Bean(name = "authUserEntityManagerFactory")
+    @Bean(name = {"authUserEntityManagerFactory", "entityManagerFactory"})
     public LocalContainerEntityManagerFactoryBean authUserEntityManagerFactory(
             @Qualifier("authDataSource")DataSource userDataSource, EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(userDataSource)
-                .packages("com.cwen.cart_service.domain.repositories")
+                .packages("com.cwen.cart_service.domain")
                 .persistenceUnit("authUserPersistenceUnit")
                 .build();
     }
+
+    @Primary
     @Bean(name = "authUserTransactionManager")
     public PlatformTransactionManager userTransactionManager(
             @Qualifier("authUserEntityManagerFactory") EntityManagerFactory userEntityManagerFactory) {
@@ -41,7 +43,7 @@ public class EntityManagerConfig {
             EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(guestDataSource)
-                .packages("com.cwen.cart_service.domain.repositories")
+                .packages("com.cwen.cart_service.domain")
                 .persistenceUnit("guestUserPersistenceUnit")
                 .build();
     }
