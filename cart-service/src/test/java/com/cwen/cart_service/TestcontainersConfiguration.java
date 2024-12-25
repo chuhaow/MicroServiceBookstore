@@ -52,6 +52,9 @@ class TestcontainersConfiguration {
 		registry.add("spring.datasource.guest.url", () -> guestPostgresContainer().getJdbcUrl());
 		registry.add("spring.datasource.guest.username", () -> guestPostgresContainer().getUsername());
 		registry.add("spring.datasource.guest.password", () -> guestPostgresContainer().getPassword());
+
+		System.out.println("Auth DB URL: " + authPostgresContainer().getJdbcUrl());
+		System.out.println("Guest DB URL: " + guestPostgresContainer().getJdbcUrl());
 	}
 
 	@Bean
@@ -91,7 +94,7 @@ class TestcontainersConfiguration {
 																		   @Qualifier("testAuthDataSource") DataSource authDataSource) {
 		return builder
 				.dataSource(authDataSource)
-				.packages("com.cwen.cart_service.domain")  // Replace with your entity package
+				.packages("com.cwen.cart_service.domain")
 				.persistenceUnit("authPU")
 				.build();
 	}
@@ -102,7 +105,7 @@ class TestcontainersConfiguration {
 																			@Qualifier("testGuestDataSource") DataSource guestDataSource) {
 		return builder
 				.dataSource(guestDataSource)
-				.packages("com.cwen.cart_service.domain")  // Replace with your entity package
+				.packages("com.cwen.cart_service.domain")
 				.persistenceUnit("guestPU")
 				.build();
 	}
