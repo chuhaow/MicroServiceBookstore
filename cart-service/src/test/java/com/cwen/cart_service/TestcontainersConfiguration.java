@@ -1,11 +1,14 @@
 package com.cwen.cart_service;
 
 import dasniko.testcontainers.keycloak.KeycloakContainer;
+import jakarta.annotation.PostConstruct;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaVendorAdapter;
@@ -29,31 +32,23 @@ class TestcontainersConfiguration {
 	@Bean
 	@ServiceConnection
     static PostgreSQLContainer<?> authPostgresContainer() {
-		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:17-alpine"))
+		PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:17-alpine"))
 				.withDatabaseName("authdb")
 				.withUsername("authuser")
 				.withPassword("authpass");
+		container.start();
+		return container;
 	}
 
 	@Bean
 	@ServiceConnection
 	static PostgreSQLContainer<?> guestPostgresContainer() {
-		return new PostgreSQLContainer<>(DockerImageName.parse("postgres:17-alpine"))
+		PostgreSQLContainer<?> container = new PostgreSQLContainer<>(DockerImageName.parse("postgres:17-alpine"))
 				.withDatabaseName("guestdb")
 				.withUsername("guestuser")
 				.withPassword("guestpass");
-	}
-
-	@DynamicPropertySource
-	static void configureDynamicProperties(DynamicPropertyRegistry registry) {
-		registry.add("spring.datasource.auth.url", () -> authPostgresContainer().getJdbcUrl());
-		registry.add("spring.datasource.auth.username", () -> authPostgresContainer().getUsername());
-		registry.add("spring.datasource.auth.password", () -> authPostgresContainer().getPassword());
-		registry.add("spring.datasource.guest.url", () -> guestPostgresContainer().getJdbcUrl());
-		registry.add("spring.datasource.guest.username", () -> guestPostgresContainer().getUsername());
-		registry.add("spring.datasource.guest.password", () -> guestPostgresContainer().getPassword());
-		System.out.println("Auth DB URL: " + authPostgresContainer().getJdbcUrl());
-		System.out.println("Guest DB URL: " + guestPostgresContainer().getJdbcUrl());
+		container.start();
+		return container;
 	}
 
 	@Bean
@@ -107,6 +102,32 @@ class TestcontainersConfiguration {
 				.packages("com.cwen.cart_service.domain")
 				.persistenceUnit("guestPU")
 				.build();
+	}
+
+	@Bean(name = "testAuthFlyway")
+	public Flyway authFlyway(@Qualifier("testAuthDataSource") DataSource dataSource, DynamicPropertyRegistry registry) {
+		registry.add("spring.datasource.auth.jdbcUrl", () -> authPostgresContainer().getJdbcUrl());
+		registry.add("spring.datasource.auth.username", () -> authPostgresContainer().getUsername());
+		registry.add("spring.datasource.auth.password", () -> authPostgresContainer().getPassword());
+		Flyway flyway = Flyway.configure()
+				.dataSource(dataSource)
+				.locations("classpath:db/migration/auth")
+				.load();
+		flyway.migrate();
+		return flyway;
+	}
+
+	@Bean(name = "guestAuthFlyway")
+	public Flyway guestFlyway(@Qualifier("testGuestDataSource") DataSource dataSource, DynamicPropertyRegistry registry) {
+		registry.add("spring.datasource.guest.jdbcUrl", () -> guestPostgresContainer().getJdbcUrl());
+		registry.add("spring.datasource.guest.username", () -> guestPostgresContainer().getUsername());
+		registry.add("spring.datasource.guest.password", () -> guestPostgresContainer().getPassword());
+		Flyway flyway = Flyway.configure()
+				.dataSource(dataSource)
+				.locations("classpath:db/migration/guest")
+				.load();
+		flyway.migrate();
+		return flyway;
 	}
 
 
