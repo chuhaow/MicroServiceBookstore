@@ -52,7 +52,6 @@ class TestcontainersConfiguration {
 		registry.add("spring.datasource.guest.url", () -> guestPostgresContainer().getJdbcUrl());
 		registry.add("spring.datasource.guest.username", () -> guestPostgresContainer().getUsername());
 		registry.add("spring.datasource.guest.password", () -> guestPostgresContainer().getPassword());
-
 		System.out.println("Auth DB URL: " + authPostgresContainer().getJdbcUrl());
 		System.out.println("Guest DB URL: " + guestPostgresContainer().getJdbcUrl());
 	}
