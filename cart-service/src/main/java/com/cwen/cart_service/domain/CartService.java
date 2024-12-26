@@ -27,8 +27,9 @@ public class CartService {
     }
 
     public AddToCartResponse addToCart(@Valid AddToCartRequest request, String user) {
-        cartItemValidator.validate(request);
         CartItem cartItem = request.item();
+        cartItemValidator.validate(cartItem);
+
 
         CartEntity cart = authUserCartRepository.findByUserId(user)
                 .orElseGet( () -> {

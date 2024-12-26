@@ -1,16 +1,16 @@
-create sequence guest_cart_id_seq start with 1 increment by 50;
+create sequence cart_id_seq start with 1 increment by 50;
 
-create sequence guest_cart_item_id_seq start with 1 increment by 50;
+create sequence cart_item_id_seq start with 1 increment by 50;
 
 create table guest_carts (
-                       cart_id bigint default nextval('guest_cart_id_seq') primary key,
+                       cart_id bigint default nextval('cart_id_seq') primary key,
                        user_id text not null,
                        created_at timestamp default current_timestamp,
                        updated_at timestamp
 );
 
 create table guest_cart_items (
-                            cart_item_id bigint default nextval('guest_cart_item_id_seq') primary key,
+                            cart_item_id bigint default nextval('cart_item_id_seq') primary key,
                             cart_id bigint not null,
                             product_code text not null,
                             product_name text not null,

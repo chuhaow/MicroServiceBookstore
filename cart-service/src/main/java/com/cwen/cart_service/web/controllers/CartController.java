@@ -27,14 +27,6 @@ public class CartController {
         this.securityService = securityService;
     }
 
-    @PostMapping("/testadd")
-    @ResponseStatus(HttpStatus.OK)
-    AddToCartResponse addToCartTest(@Valid @RequestBody AddToCartRequest request){
-        String user = "cwen";
-        log.info("Add item to cart for: {}", user);
-        return cartService.addToCart(request, user);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     AddToCartResponse addToCart(@Valid @RequestBody AddToCartRequest request){
