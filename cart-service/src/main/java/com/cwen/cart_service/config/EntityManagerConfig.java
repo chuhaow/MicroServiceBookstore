@@ -25,7 +25,7 @@ public class EntityManagerConfig {
             @Qualifier("authDataSource")DataSource userDataSource, EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(userDataSource)
-                .packages("com.cwen.cart_service.domain")
+                .packages("com.cwen.cart_service.domain.entities.auth", "com.cwen.cart_service.domain.entities")
                 .persistenceUnit("authUserPersistenceUnit")
                 .build();
     }
@@ -43,7 +43,7 @@ public class EntityManagerConfig {
             EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(guestDataSource)
-                .packages("com.cwen.cart_service.domain")
+                .packages("com.cwen.cart_service.domain.entities.guest", "com.cwen.cart_service.domain.entities")
                 .persistenceUnit("guestUserPersistenceUnit")
                 .build();
     }

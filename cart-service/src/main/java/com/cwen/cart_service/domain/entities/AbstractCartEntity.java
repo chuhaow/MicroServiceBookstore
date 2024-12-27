@@ -1,9 +1,8 @@
-package com.cwen.cart_service.domain;
+package com.cwen.cart_service.domain.entities;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @MappedSuperclass
 public abstract class AbstractCartEntity {

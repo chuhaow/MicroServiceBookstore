@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.cwen.cart_service.domain.repositories.guest",
-        entityManagerFactoryRef = "authUserEntityManagerFactory",
+        entityManagerFactoryRef = "guestUserEntityManagerFactory",
         transactionManagerRef = "guestTransactionManager"
 )
 public class GuestCartRepositoryConfig {

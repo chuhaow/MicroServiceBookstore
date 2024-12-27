@@ -1,10 +1,12 @@
 package com.cwen.cart_service.domain;
 
-import com.cwen.cart_service.domain.models.AddToCartRequest;
+import com.cwen.cart_service.domain.entities.guest.GuestCartEntity;
+import com.cwen.cart_service.domain.entities.guest.GuestCartItemEntity;
 import com.cwen.cart_service.domain.models.AddToCartResponse;
 import com.cwen.cart_service.domain.models.AddToGuestCartRequest;
 import com.cwen.cart_service.domain.models.CartItem;
 import com.cwen.cart_service.domain.repositories.guest.GuestCartRepository;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +15,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
-/*
+
 @Service
+@Transactional
 public class GuestCartService {
     private final Logger log = LoggerFactory.getLogger(GuestCartService.class);
 
@@ -32,24 +35,24 @@ public class GuestCartService {
         cartItemValidator.validate(cartItem);
 
 
-        CartEntity cart = guestCartRepository.findByGuestId(guestId)
+        GuestCartEntity cart = guestCartRepository.findByUserId(guestId)
                 .orElseGet( () -> {
-                    CartEntity newCart = new CartEntity();
+                    GuestCartEntity newCart = new GuestCartEntity();
                     newCart.setUserId(guestId);
                     newCart.setCreatedAt(LocalDateTime.now());
                     newCart.setItems(new HashSet<>());
                     return newCart;
                 });
 
-        Optional<CartItemEntity> existingItem = cart.getItems().stream()
+        Optional<GuestCartItemEntity> existingItem = cart.getItems().stream()
                 .filter(item -> item.getCode().equals(cartItem.code()))
                 .findFirst();
 
         if(existingItem.isPresent()) {
-            CartItemEntity itemEntity = existingItem.get();
+            GuestCartItemEntity itemEntity = existingItem.get();
             itemEntity.setQuantity(itemEntity.getQuantity() + cartItem.quantity());
         }else{
-            CartItemEntity cartItemEntity = new CartItemEntity();
+            GuestCartItemEntity cartItemEntity = new GuestCartItemEntity();
             cartItemEntity.setCode(cartItem.code());
             cartItemEntity.setName(cartItem.name());
             cartItemEntity.setPrice(cartItem.price());
@@ -59,10 +62,9 @@ public class GuestCartService {
         }
 
         cart.setUpdatedAt(LocalDateTime.now());
-        CartEntity savedCart = guestCartRepository.save(cart);
+        GuestCartEntity savedCart = guestCartRepository.save(cart);
         return new AddToCartResponse(savedCart.getId());
 
     }
 }
 
- */

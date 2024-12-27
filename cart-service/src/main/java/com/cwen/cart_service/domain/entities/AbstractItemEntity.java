@@ -1,4 +1,4 @@
-package com.cwen.cart_service.domain;
+package com.cwen.cart_service.domain.entities;
 
 import jakarta.persistence.*;
 

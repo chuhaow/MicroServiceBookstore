@@ -1,13 +1,13 @@
 package com.cwen.cart_service.domain.repositories.guest;
 
-import com.cwen.cart_service.domain.CartEntity;
+import com.cwen.cart_service.domain.entities.guest.GuestCartEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface GuestCartRepository extends JpaRepository<CartEntity, Long> {
+public interface GuestCartRepository extends JpaRepository<GuestCartEntity, Long> {
 
-    Optional<CartEntity> findByUserId(String guestId);
+    Optional<GuestCartEntity> findByUserId(String guestId);
 }
