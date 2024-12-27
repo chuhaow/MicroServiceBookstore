@@ -8,6 +8,7 @@ import com.cwen.cart_service.domain.models.AddToGuestCartRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +23,7 @@ public class GuestCartController {
     }
 
     @PostMapping
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.OK)
     AddToCartResponse addToCart(@Valid @RequestBody AddToGuestCartRequest request){
         log.info("Add item to cart for: Guest");
         return guestCartService.addToCart(request);
