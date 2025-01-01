@@ -33,7 +33,7 @@ import static java.util.Collections.singletonList;
 @Import(TestcontainersConfiguration.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Testcontainers
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class AbstractIntegrationTest {
     private static final String CLIENT_ID = "bookstore-webapp";
     private static final String CLIENT_SECRET = "YMtmsNEPbq6v5jLZzkRi72hhAomOsVQ0";

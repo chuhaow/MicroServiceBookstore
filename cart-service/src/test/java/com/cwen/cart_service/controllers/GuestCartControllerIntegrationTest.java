@@ -15,7 +15,7 @@ import org.springframework.test.context.jdbc.SqlConfig;
 
 import java.math.BigDecimal;
 import java.util.List;
-
+/*
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.notNullValue;
 @SqlConfig(dataSource = "testGuestDataSource", transactionManager = "testGuestTransactionManager")
@@ -30,7 +30,7 @@ public class GuestCartControllerIntegrationTest extends AbstractIntegrationTest 
         circuitBreakerRegistry.circuitBreaker("catalog-service").reset();
     }
 
-/*
+
     @Test
     void addToCartSuccessTest(){
         mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
@@ -117,7 +117,6 @@ public class GuestCartControllerIntegrationTest extends AbstractIntegrationTest 
         }
     }
 
- */
-
 
 }
+*/
