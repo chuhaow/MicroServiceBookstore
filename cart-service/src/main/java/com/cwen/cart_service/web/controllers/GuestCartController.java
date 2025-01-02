@@ -32,7 +32,7 @@ public class GuestCartController {
     @PostMapping("/update/quantity")
     @ResponseStatus(HttpStatus.OK)
     UpdateItemQuantityResponse updateItemQuantity(@Valid @RequestBody GuestUpdateQuantityRequest request){
-        log.info("Remove item from cart for: {}", request.guestId());
+        log.info("Update item from for: {}", request.guestId());
         return guestCartService.updateItemQuantity(request);
     }
 

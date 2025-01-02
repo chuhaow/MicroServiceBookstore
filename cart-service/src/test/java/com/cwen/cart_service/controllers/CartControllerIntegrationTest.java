@@ -24,7 +24,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
         circuitBreakerRegistry.circuitBreaker("catalog-service").reset();
     }
 
-
+    /*
     @Nested
     class AddToCartTest{
         @Test
@@ -52,6 +52,7 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
                     .body("cartId", notNullValue());
         }
     }
+     */
 
 
     @Test

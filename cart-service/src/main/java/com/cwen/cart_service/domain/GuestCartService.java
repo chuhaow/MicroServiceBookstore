@@ -5,6 +5,7 @@ import com.cwen.cart_service.domain.entities.auth.AuthCartItemEntity;
 import com.cwen.cart_service.domain.entities.guest.GuestCartEntity;
 import com.cwen.cart_service.domain.entities.guest.GuestCartItemEntity;
 import com.cwen.cart_service.domain.exceptions.ItemNotFoundInCartException;
+import com.cwen.cart_service.domain.exceptions.UserIdNotFound;
 import com.cwen.cart_service.domain.models.*;
 import com.cwen.cart_service.domain.repositories.guest.GuestCartRepository;
 import jakarta.transaction.Transactional;
@@ -103,7 +104,13 @@ public class GuestCartService {
     }
 
     public List<CartItemDTO> getCartItems(String guestId) {
+        List<GuestCartEntity> carts = guestCartRepository.findAll();
+        System.out.println("Guest Carts: " + carts);
         Optional<GuestCartEntity> cart = guestCartRepository.findByUserId(guestId);
+        if(cart.isEmpty()){
+            throw new UserIdNotFound("Cart not found for user ID: " + guestId);
+        }
+
         return cart.map(c -> c.getItems().stream()
                         .map(item -> new CartItemDTO(item.getCode(), item.getName(), item.getPrice(), item.getQuantity()))
                         .collect(Collectors.toList()))
