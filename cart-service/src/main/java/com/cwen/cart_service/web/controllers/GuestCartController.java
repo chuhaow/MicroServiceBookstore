@@ -1,6 +1,7 @@
 package com.cwen.cart_service.web.controllers;
 
 
+import com.cwen.cart_service.domain.CartService;
 import com.cwen.cart_service.domain.GuestCartService;
 import com.cwen.cart_service.domain.models.*;
 import jakarta.validation.Valid;
@@ -18,8 +19,11 @@ public class GuestCartController {
 
     private final GuestCartService guestCartService;
 
-    public GuestCartController(GuestCartService guestCartService) {
+    private final CartService cartService;
+
+    public GuestCartController(GuestCartService guestCartService, CartService cartService) {
         this.guestCartService = guestCartService;
+        this.cartService = cartService;
     }
 
     @PostMapping
@@ -40,6 +44,13 @@ public class GuestCartController {
     List<CartItemDTO> getCartItems(@PathVariable String guestId){
         log.info("Get cart items for: {}", guestId);
         return guestCartService.getCartItems(guestId);
+    }
+
+    @PostMapping("/{guestId}/{authUser}")
+    @ResponseStatus(HttpStatus.OK)
+    void testMerge(@PathVariable String guestId, @PathVariable String authUser){
+        log.info("Merging");
+        cartService.mergeGuestCart(guestId,authUser);
     }
 
 }
