@@ -30,18 +30,7 @@ public class SecurityConfig {
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(c -> c.requestMatchers(
-                                "/js/*",
-                                "/css/*",
-                                "/images/*",
-                                "/error",
-                                "/",
-                                "/actuator/**",
-                                "/products/**",
-                                "/api/products/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+        http.authorizeHttpRequests(c -> c.anyRequest().permitAll())
                 .cors(CorsConfigurer::disable) //TODO: Figure out something better than disabling these
                 .csrf(CsrfConfigurer::disable)
                 .oauth2Login(oauth2 -> oauth2

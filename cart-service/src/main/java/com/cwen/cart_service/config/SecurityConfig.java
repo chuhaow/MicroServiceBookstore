@@ -17,7 +17,7 @@ public class
 SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(c -> c.requestMatchers("/actuator/**","/swagger-ui/**", "/v3/api-docs/**", "/api/carts/guest/**")
+        http.authorizeHttpRequests(c -> c.requestMatchers("/actuator/**","/swagger-ui/**", "/v3/api-docs/**", "/api/carts/guest/**", "/api/carts/guest")
                         .permitAll()
                         .anyRequest()
                         .authenticated())

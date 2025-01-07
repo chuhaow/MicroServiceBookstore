@@ -1,15 +1,3 @@
-//TODO: This should store to a db instead of localStorage
-let cachedCartItemData = null
-
-function fetchCartItemData(){
-    if(cachedCartItemData){
-        return Promise.resolve()(cachedCartItemData)
-    }
-    return $.getJSON("/api/carts").then(response =>{
-        cachedCartItemData = response
-        return response
-    })
-}
 
 const addProductToCart = function(product){
     const cartItemData = {
@@ -37,8 +25,60 @@ const addProductToCart = function(product){
 
 }
 
+const guestAddProductToCart = function(product){
+    const guestId = getGuestId();
+    const cartItemData = {
+        "guestId" : guestId,
+        "item": {
+            "code": product.code,
+            "name": product.name,
+            "price": product.price,
+            "quantity": 1
+        }
+    }
+    console.log(cartItemData)
+    $.ajax({
+        url: '/api/carts/guest',
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data : JSON.stringify(cartItemData),
+        success: (resp) =>{
+            guestUpdateCartItemCount()
+        },
+        error:(err) =>{
+            console.log("Error adding to cart: ", err)
+        }
+    })
+}
+
 function updateCartItemCount(){
     $.getJSON("/api/carts")
+        .done( (items) =>{
+            const count = items.reduce((total,item) => total + item.quantity,0)
+            $('#cart-item-count').text('(' + count + ')');
+        })
+        .fail( (error) =>{
+            console.error("Error fetching cart items:", error);
+            $('#cart-item-count').text('(' + 0 + ')');
+        })
+}
+
+function guestUpdateCartItemCount(){
+    $.getJSON("/api/carts/guest/" + getGuestId())
+        .done( (items) =>{
+            const count = items.reduce((total,item) => total + item.quantity,0)
+            $('#cart-item-count').text('(' + count + ')');
+        })
+        .fail( (error) =>{
+            console.error("Error fetching cart items:", error);
+            $('#cart-item-count').text('(' + 0 + ')');
+        })
+}
+
+
+function updateCartItemCount(){
+    $.getJSON("/api/carts/guest")
         .done( (items) =>{
             const count = items.reduce((total,item) => total + item.quantity,0)
             $('#cart-item-count').text('(' + count + ')');
