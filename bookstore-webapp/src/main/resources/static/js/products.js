@@ -1,13 +1,18 @@
 document.addEventListener('alpine:init', ()=>{
     Alpine.data('initData', (pageNo) => ({
+        isAuthenticated: document.getElementById('auth-status').dataset.authenticated === 'true',
         pageNo: pageNo,
         products:{
             data:[]
         },
         init(){
             this.loadProducts(pageNo)
-            updateCartItemCount();
             generateGuestId()
+            if(this.isAuthenticated){
+                updateCartItemCount();
+            }else{
+                guestUpdateCartItemCount()
+            }
         },
         loadProducts(pageNo){
             console.log("loading products")

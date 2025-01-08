@@ -8,6 +8,7 @@
 
 <body>
 <div layout:fragment="content">
+    <div id="auth-status" data-authenticated="[[${#authentication.authenticated}]]"></div>
     <div th:x-data="|initData('${pageNo}')|">
         <div th:replace="~{fragments/pagination :: pagination}"></div>
         <div class="row row-cols-1 row-cols-md-5">

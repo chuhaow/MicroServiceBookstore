@@ -1,5 +1,6 @@
 document.addEventListener('alpine:init', () =>{
     Alpine.data('initData', () => ({
+        isAuthenticated: document.getElementById('auth-status').dataset.authenticated === 'true',
         cart: {items: [], totalAmount: 0},
         orderForm:{
             customer:{
@@ -20,12 +21,23 @@ document.addEventListener('alpine:init', () =>{
 
 
         init(){
-            updateCartItemCount();
-            getCart().then((cartData) => {
-                this.cart = cartData;
-            }).catch((error) => {
-                console.error("Failed to initialize cart:", error);
-            });
+            console.log("IsAuth: " + this.isAuthenticated)
+            if(this.isAuthenticated){
+                updateCartItemCount();
+                getCart().then((cartData) => {
+                    this.cart = cartData;
+                }).catch((error) => {
+                    console.error("Failed to initialize cart:", error);
+                });
+            }else{
+                guestUpdateCartItemCount()
+                guestGetCart().then((cartData) => {
+                    this.cart = cartData;
+                }).catch((error) =>{
+                    console.error("Failed to Initialize guest cart: ", error);
+                })
+            }
+
         },
 
         createOrder(){
@@ -60,6 +72,14 @@ document.addEventListener('alpine:init', () =>{
             } catch (error) {
                 console.error("Failed to update item quantity and fetch cart:", error);
             }
+        },
+        async guestUpdateItemQuantity(product, targetQuantity){
+          try{
+              await guestUpdateProductQuantity(product, targetQuantity<0 ? 0 : targetQuantity)
+              this.cart = await guestGetCart()
+          }catch (error) {
+              console.error("Failed to update item quantity and fetch guest cart:", error);
+          }
         }
     }))
 })
