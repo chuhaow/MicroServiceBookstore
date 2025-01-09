@@ -74,4 +74,12 @@ public class CartController {
     List<CartItem> guestGetCart(@PathVariable String guestId) {
         return cartService.guestGetCart(guestId);
     }
+
+    @PostMapping("/api/carts/merge/{guestId}")
+    @ResponseBody
+    List<CartItem> mergeCarts(@PathVariable String guestId) {
+        String accessToken =  securityHelper.getAccessToken();
+        Map<String, ?> headers = Map.of("Authorization", "Bearer " + accessToken);
+        return cartService.mergeCarts(headers,guestId);
+    }
 }

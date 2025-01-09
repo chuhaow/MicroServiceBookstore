@@ -5,12 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.oidc.web.logout.OidcClientInitiatedLogoutSuccessHandler;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.CorsConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
@@ -47,6 +49,7 @@ public class SecurityConfig {
                 .cors(CorsConfigurer::disable) //TODO: Figure out something better than disabling these
                 .csrf(CsrfConfigurer::disable)
                 .oauth2Login(oauth2 -> oauth2
+                        .successHandler(authenticationSuccessHandler())
                         .failureHandler((request, response, exception) -> {
                             // Redirect to login page on failure
                             response.sendRedirect(loginUrl);
@@ -67,5 +70,24 @@ public class SecurityConfig {
         return oidcClientInitiatedLogoutSuccessHandler;
     }
 
+    private AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return (request, response, authentication) -> {
+            if (authentication instanceof OAuth2AuthenticationToken) {
+                OAuth2AuthenticationToken oauth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+
+                String preferredUsername = (String) oauth2AuthenticationToken.getPrincipal()
+                        .getAttributes().get("preferred_username");
+
+                System.out.println("Login successful for user (preferred username): " + preferredUsername);
+                response.sendRedirect("/products?merge=" + true);
+            } else {
+
+                String username = authentication.getName();
+                System.out.println("Login successful for user: " + username);
+                response.sendRedirect("/");
+            }
+
+        };
+    }
 
 }

@@ -43,4 +43,8 @@ public interface CartServiceClient {
     UpdateItemQuantityResponseDTO guestUpdateItemQuantity(
              @RequestBody GuestUpdateQuantityRequest guestUpdateQuantityRequest);
 
+    @PostExchange("/cart/api/carts/merge/{guestId}")
+    List<CartItem> mergeCarts(@RequestHeader Map<String, ?> headers, @PathVariable String guestId);
+
+
 }

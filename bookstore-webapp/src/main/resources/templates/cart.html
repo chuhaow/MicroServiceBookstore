@@ -6,7 +6,7 @@
       layout:decorate="~{layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div layout:fragment="content">
-    <div id="auth-status" data-authenticated="[[${#authentication.authenticated}]]"></div>
+    <div id="auth-status"  sec:authorize="isAuthenticated()"></div>
     <div x-data="initData()">
         <div class="col-md-8 offset-md-2">
 
@@ -48,7 +48,7 @@
                 </table>
 
                 <form class="row g-3" method="post" @submit.prevent="createOrder" >
-                    <div sec:authorize="isAuthenticated()">
+                    <div class="row g-3" sec:authorize="isAuthenticated()">
                         <div class="col-md-6">
                             <label for="customerName" class="form-label">Name</label>
                             <input type="text" class="form-control"
@@ -154,6 +154,7 @@
 <div layout:fragment="pageScripts">
     <script src="/js/cart.js"></script>
     <script src="/js/guestId.js"></script>
+
 </div>
 </body>
 </html>

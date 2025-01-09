@@ -1,6 +1,6 @@
 document.addEventListener('alpine:init', () =>{
     Alpine.data('initData', () => ({
-        isAuthenticated: document.getElementById('auth-status').dataset.authenticated === 'true',
+        isAuthenticated: false,
         cart: {items: [], totalAmount: 0},
         orderForm:{
             customer:{
@@ -21,6 +21,8 @@ document.addEventListener('alpine:init', () =>{
 
 
         init(){
+            const authStatusElement = document.getElementById('auth-status');
+            this.isAuthenticated = authStatusElement !== null
             console.log("IsAuth: " + this.isAuthenticated)
             if(this.isAuthenticated){
                 updateCartItemCount();

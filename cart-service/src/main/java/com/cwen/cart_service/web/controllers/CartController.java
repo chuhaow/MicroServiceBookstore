@@ -20,10 +20,12 @@ public class CartController {
     private static final Logger log = LoggerFactory.getLogger(CartController.class);
 
     private final AuthCartService authCartService;
+    private final CartService cartService;
     private final SecurityService securityService;
 
-    public CartController(AuthCartService authCartService, SecurityService securityService) {
+    public CartController(AuthCartService authCartService, CartService cartService, SecurityService securityService) {
         this.authCartService = authCartService;
+        this.cartService = cartService;
         this.securityService = securityService;
     }
 
@@ -41,6 +43,14 @@ public class CartController {
         String user = securityService.getLoginUsername();
         log.info("Remove item from cart for: {}", user);
         return authCartService.updateItemQuantity(request, user);
+    }
+
+    @PostMapping("/merge/{guestId}")
+    @ResponseStatus(HttpStatus.OK)
+    List<CartItemDTO> mergeCart(@PathVariable String guestId){
+        String user = securityService.getLoginUsername();
+        cartService.mergeGuestCart(guestId,user);
+        return authCartService.getCartItems(user);
     }
 
     @GetMapping
