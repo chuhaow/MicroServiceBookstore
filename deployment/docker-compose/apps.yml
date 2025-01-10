@@ -41,6 +41,8 @@ services:
         condition: service_healthy
       bookstore-rabbitmq:
         condition: service_healthy
+      keycloak:
+        condition: service_started
     deploy:
       resources:
         limits:
@@ -111,17 +113,24 @@ services:
     container_name: cart-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
-      - DB_URL=jdbc:postgresql://cart-db:5432/postgres
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=password
+      - DB1_URL=jdbc:postgresql://cart-auth-db:5432/postgres
+      - DB1_USERNAME=postgres
+      - DB1_PASSWORD=password
+      - DB2_URL=jdbc:postgresql://cart-guest-db:5432/postgres
+      - DB2_USERNAME=postgres
+      - DB2_PASSWORD=password
       - OAUTH2_SERVER_URL=http://keycloak:9191
       - CART_CATALOG_SERVICE_URL=http://api-gateway:8989/catalog
     ports:
       - "8084:8084"
     restart: unless-stopped
     depends_on:
-      catalog-db:
+      cart-auth-db:
         condition: service_healthy
+      cart-guest-db:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
     deploy:
       resources:
         limits:
