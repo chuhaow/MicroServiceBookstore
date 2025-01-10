@@ -59,7 +59,6 @@ public class CartController {
     @PostMapping("api/carts/guest")
     @ResponseBody
     AddedToCartResponseDTO guestAddToCart(@Valid @RequestBody GuestAddToCartRequest guestAddToCartRequest) {
-        System.out.println(guestAddToCartRequest.guestId());
         return cartService.guestAddToCart(guestAddToCartRequest);
     }
 

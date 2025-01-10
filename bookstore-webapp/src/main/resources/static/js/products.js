@@ -1,11 +1,13 @@
 document.addEventListener('alpine:init', ()=>{
     Alpine.data('initData', (pageNo) => ({
-        isAuthenticated: document.getElementById('auth-status').dataset.authenticated === 'true',
+        isAuthenticated: false,
         pageNo: pageNo,
         products:{
             data:[]
         },
         init(){
+            const authStatusElement = document.getElementById('auth-status');
+            this.isAuthenticated = authStatusElement !== null
             this.loadProducts(pageNo)
             generateGuestId()
             if(this.isAuthenticated){

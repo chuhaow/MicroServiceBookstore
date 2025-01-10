@@ -72,21 +72,17 @@ public class SecurityConfig {
 
     private AuthenticationSuccessHandler authenticationSuccessHandler() {
         return (request, response, authentication) -> {
-            if (authentication instanceof OAuth2AuthenticationToken) {
-                OAuth2AuthenticationToken oauth2AuthenticationToken = (OAuth2AuthenticationToken) authentication;
+            String referer = request.getHeader("Referer");
 
-                String preferredUsername = (String) oauth2AuthenticationToken.getPrincipal()
-                        .getAttributes().get("preferred_username");
+            String redirectUrl = (referer != null) ? referer : "/products";
 
-                System.out.println("Login successful for user (preferred username): " + preferredUsername);
-                response.sendRedirect("/products?merge=" + true);
+            if (redirectUrl.contains("?")) {
+                redirectUrl += "&merge=true";
             } else {
-
-                String username = authentication.getName();
-                System.out.println("Login successful for user: " + username);
-                response.sendRedirect("/");
+                redirectUrl += "?merge=true";
             }
 
+            response.sendRedirect(redirectUrl);
         };
     }
 
