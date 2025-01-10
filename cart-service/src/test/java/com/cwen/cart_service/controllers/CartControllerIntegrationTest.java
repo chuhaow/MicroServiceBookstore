@@ -24,36 +24,6 @@ public class CartControllerIntegrationTest extends AbstractIntegrationTest {
         circuitBreakerRegistry.circuitBreaker("catalog-service").reset();
     }
 
-    /*
-    @Nested
-    class AddToCartTest{
-        @Test
-        void addToCartSuccessTest(){
-            System.out.println("InTest: " +wiremockServer.getBaseUrl());
-
-            mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
-            var payload = """
-                    {
-                        "item": {
-                            "code": "P100",
-                            "name": "Product 1",
-                            "price": 34.00,
-                            "quantity": 1
-                        }
-                    }""";
-
-            given().contentType(ContentType.JSON)
-                    .header("Authorization", "Bearer " + getToken())
-                    .body(payload)
-                    .when()
-                    .post("api/carts")
-                    .then()
-                    .statusCode(HttpStatus.OK.value())
-                    .body("cartId", notNullValue());
-        }
-    }
-     */
-
 
     @Test
     void getCartSuccessTest(){

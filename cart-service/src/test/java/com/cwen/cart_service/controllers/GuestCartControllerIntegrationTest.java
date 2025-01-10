@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 @SqlConfig(dataSource = "testGuestDataSource", transactionManager = "testGuestTransactionManager")
 @Sql("/test-guest-cart.sql")
@@ -28,31 +29,6 @@ public class GuestCartControllerIntegrationTest extends AbstractIntegrationTest 
     public void setUp() {
         circuitBreakerRegistry.circuitBreaker("catalog-service").reset();
     }
-
-    /*
-    @Test
-    void addToCartSuccessTest(){
-        mockGetProductByCode("P100", "Product 1", new BigDecimal("34.00"));
-        var payload = """
-                    {
-                        "guestId": "12345532454",
-                        "item": {
-                            "code": "P100",
-                            "name": "Product 1",
-                            "price": 34.00,
-                            "quantity": 1
-                        }
-                    }""";
-
-        given().contentType(ContentType.JSON)
-                .body(payload)
-                .when()
-                .post("api/carts/guest")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("cartId", notNullValue());
-    }
-     */
 
     @Nested
     class GetGuestCartTests{
@@ -73,7 +49,8 @@ public class GuestCartControllerIntegrationTest extends AbstractIntegrationTest 
                     .when()
                     .get("api/carts/guest/" + guestId)
                     .then()
-                    .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.OK.value())
+                    .body(equalTo("[]"));
         }
 
     }

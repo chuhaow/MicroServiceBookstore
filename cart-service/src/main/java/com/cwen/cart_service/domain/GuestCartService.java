@@ -105,10 +105,9 @@ public class GuestCartService {
 
     public List<CartItemDTO> getCartItems(String guestId) {
         List<GuestCartEntity> carts = guestCartRepository.findAll();
-        System.out.println("Guest Carts: " + carts);
         Optional<GuestCartEntity> cart = guestCartRepository.findByUserId(guestId);
         if(cart.isEmpty()){
-            throw new UserIdNotFound("Cart not found for user ID: " + guestId);
+            log.warn("Not found cart for guest ID: " + guestId);
         }
 
         return cart.map(c -> c.getItems().stream()
