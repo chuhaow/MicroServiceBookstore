@@ -67,6 +67,7 @@ public class GuestCartService {
         }
 
         cart.setUpdatedAt(LocalDateTime.now());
+        cart.setExpiresAt(LocalDateTime.now().plusDays(1));
         GuestCartEntity savedCart = guestCartRepository.save(cart);
         return new AddToCartResponse(savedCart.getId());
 
@@ -95,6 +96,7 @@ public class GuestCartService {
             }
 
             cart.setUpdatedAt(LocalDateTime.now());
+            cart.setExpiresAt(LocalDateTime.now().plusDays(1));
             GuestCartEntity savedCart = guestCartRepository.save(cart);
 
             return new UpdateItemQuantityResponse(code, savedCart.getId());
@@ -104,16 +106,23 @@ public class GuestCartService {
     }
 
     public List<CartItemDTO> getCartItems(String guestId) {
-        List<GuestCartEntity> carts = guestCartRepository.findAll();
         Optional<GuestCartEntity> cart = guestCartRepository.findByUserId(guestId);
         if(cart.isEmpty()){
             log.warn("Not found cart for guest ID: " + guestId);
+        }else{
+            cart.get().setExpiresAt(LocalDateTime.now().plusDays(1));
         }
 
         return cart.map(c -> c.getItems().stream()
                         .map(item -> new CartItemDTO(item.getCode(), item.getName(), item.getPrice(), item.getQuantity()))
                         .collect(Collectors.toList()))
                 .orElseGet(ArrayList::new);
+    }
+
+    public void removeExpiredCarts() {
+        log.info("Removing expired carts");
+        LocalDateTime now = LocalDateTime.now();
+        guestCartRepository.deleteByExpiresAtBefore(now);
     }
 }
 

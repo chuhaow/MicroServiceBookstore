@@ -6,7 +6,8 @@ create table guest_carts (
                        cart_id bigint default nextval('cart_id_seq') primary key,
                        user_id text not null,
                        created_at timestamp default current_timestamp,
-                       updated_at timestamp
+                       updated_at timestamp,
+                       expires_at timestamp
 );
 
 create table guest_cart_items (
