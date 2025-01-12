@@ -12,6 +12,7 @@ public class GuestCartEntity extends AbstractCartEntity {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "guestCart",orphanRemoval = true)
     private Set<GuestCartItemEntity> items;
 
+    @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
     @PrePersist
