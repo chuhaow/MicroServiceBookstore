@@ -19,20 +19,14 @@ import java.util.List;
 public class CartController {
     private static final Logger log = LoggerFactory.getLogger(CartController.class);
 
+    private final AuthCartService authCartService;
     private final CartService cartService;
     private final SecurityService securityService;
 
-    public CartController(CartService cartService, SecurityService securityService) {
+    public CartController(AuthCartService authCartService, CartService cartService, SecurityService securityService) {
+        this.authCartService = authCartService;
         this.cartService = cartService;
         this.securityService = securityService;
-    }
-
-    @PostMapping("/testadd")
-    @ResponseStatus(HttpStatus.OK)
-    AddToCartResponse addToCartTest(@Valid @RequestBody AddToCartRequest request){
-        String user = "cwen";
-        log.info("Add item to cart for: {}", user);
-        return cartService.addToCart(request, user);
     }
 
     @PostMapping
@@ -40,7 +34,7 @@ public class CartController {
     AddToCartResponse addToCart(@Valid @RequestBody AddToCartRequest request){
         String user = securityService.getLoginUsername();
         log.info("Add item to cart for: {}", user);
-        return cartService.addToCart(request, user);
+        return authCartService.addToCart(request, user);
     }
 
     @PostMapping("/update/quantity")
@@ -48,21 +42,29 @@ public class CartController {
     UpdateItemQuantityResponse updateItemQuantity(@Valid @RequestBody UpdateItemQuantityRequest request){
         String user = securityService.getLoginUsername();
         log.info("Remove item from cart for: {}", user);
-        return cartService.updateItemQuantity(request, user);
+        return authCartService.updateItemQuantity(request, user);
+    }
+
+    @PostMapping("/merge/{guestId}")
+    @ResponseStatus(HttpStatus.OK)
+    List<CartItemDTO> mergeCart(@PathVariable String guestId){
+        String user = securityService.getLoginUsername();
+        cartService.mergeGuestCart(guestId,user);
+        return authCartService.getCartItems(user);
     }
 
     @GetMapping
     List<CartItemDTO> getCartItems(){
         String user = securityService.getLoginUsername();
         log.info("Get cart items for: {}", user);
-        return cartService.getCartItems(user);
+        return authCartService.getCartItems(user);
     }
 
     @DeleteMapping
     ResponseEntity<String> deleteUserCart(){
         String user = securityService.getLoginUsername();
         log.info("Delete user cart for: {}", user);
-        cartService.deleteCart(user);
+        authCartService.deleteCart(user);
         return ResponseEntity.ok("Cart deleted successfully.");
     }
 

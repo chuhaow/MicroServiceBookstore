@@ -1,15 +1,3 @@
-//TODO: This should store to a db instead of localStorage
-let cachedCartItemData = null
-
-function fetchCartItemData(){
-    if(cachedCartItemData){
-        return Promise.resolve()(cachedCartItemData)
-    }
-    return $.getJSON("/api/carts").then(response =>{
-        cachedCartItemData = response
-        return response
-    })
-}
 
 const addProductToCart = function(product){
     const cartItemData = {
@@ -37,6 +25,33 @@ const addProductToCart = function(product){
 
 }
 
+const guestAddProductToCart = function(product){
+    const guestId = getGuestId();
+    const cartItemData = {
+        "guestId" : guestId,
+        "item": {
+            "code": product.code,
+            "name": product.name,
+            "price": product.price,
+            "quantity": 1
+        }
+    }
+    console.log(cartItemData)
+    $.ajax({
+        url: '/api/carts/guest',
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data : JSON.stringify(cartItemData),
+        success: (resp) =>{
+            guestUpdateCartItemCount()
+        },
+        error:(err) =>{
+            console.log("Error adding to cart: ", err)
+        }
+    })
+}
+
 function updateCartItemCount(){
     $.getJSON("/api/carts")
         .done( (items) =>{
@@ -48,6 +63,19 @@ function updateCartItemCount(){
             $('#cart-item-count').text('(' + 0 + ')');
         })
 }
+
+function guestUpdateCartItemCount(){
+    $.getJSON("/api/carts/guest/" + getGuestId())
+        .done( (items) =>{
+            const count = items.reduce((total,item) => total + item.quantity,0)
+            $('#cart-item-count').text('(' + count + ')');
+        })
+        .fail( (error) =>{
+            console.error("Error fetching cart items:", error);
+            $('#cart-item-count').text('(' + 0 + ')');
+        })
+}
+
 
 async function getCart() {
     const cart = { items: [], totalAmount: 0 };
@@ -64,6 +92,23 @@ async function getCart() {
 
     return cart;
 }
+
+async function guestGetCart() {
+    const cart = { items: [], totalAmount: 0 };
+    var guestId = getGuestId()
+    try {
+        const items = await $.getJSON("/api/carts/guest/" + guestId);
+        items.sort((a, b) => a.name.localeCompare(b.name));
+        cart.items = items;
+        cart.totalAmount = items.reduce((sum, item) => sum + item.quantity * item.price, 0);
+        console.log("Getting cart")
+    } catch (error) {
+        console.error("Error fetching cart items:", error);
+    }
+
+    return cart;
+}
+
 
 const updateProductQuantity = async function(product, quantity){
     console.log(quantity)
@@ -88,9 +133,34 @@ const updateProductQuantity = async function(product, quantity){
             }
         })
     })
-
-
 }
+
+const guestUpdateProductQuantity = async function(product, quantity){
+    console.log(quantity)
+    const cartItemData = {
+        "guestId": getGuestId(),
+        "itemCode": product.code,
+        "quantity": quantity
+    }
+    console.log(cartItemData)
+    return new Promise((resolve, reject) =>{
+        $.ajax({
+            url: '/api/carts/guest/update/quantity',
+            type: "POST",
+            dataType: "json",
+            contentType: "application/json",
+            data : JSON.stringify(cartItemData),
+            success: (resp) =>{
+                console.log("New Quantity Count " + cartItemData.quantity + " items")
+                guestUpdateCartItemCount()
+            },
+            error:(err) =>{
+                console.log("Error Updating Cart: ", err)
+            }
+        })
+    })
+}
+
 
 const deleteCart = function() {
     $.ajax({

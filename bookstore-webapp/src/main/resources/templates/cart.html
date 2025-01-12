@@ -3,9 +3,10 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{layout}" xmlns:sec="http://www.w3.org/1999/xhtml">
 <body>
 <div layout:fragment="content">
+    <div id="auth-status"  sec:authorize="isAuthenticated()"></div>
     <div x-data="initData()">
         <div class="col-md-8 offset-md-2">
 
@@ -29,7 +30,7 @@
                             <td x-text="item.price">price</td>
                             <td>
                                 <input type="number" min="0" x-model="item.quantity"
-                                       @change="updateItemQuantity(item, $event.target.value)"
+                                       @change="isAuthenticated ? updateItemQuantity(item, $event.target.value) : guestUpdateItemQuantity(item, $event.target.value)"
                                        />
                             </td>
                             <td x-text="item.quantity * item.price">subTotal</td>
@@ -46,97 +47,104 @@
                     </tfoot>
                 </table>
 
-                <form class="row g-3" method="post" @submit.prevent="createOrder">
-                    <div class="col-md-6">
-                        <label for="customerName" class="form-label">Name</label>
-                        <input type="text" class="form-control"
-                               id="customerName"
-                               name="customerName"
-                               x-model="orderForm.customer.name"
-                               placeholder="Name"
-                               value=""
-                               required/>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="customerEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control"
-                               id="customerEmail"
-                               name="customerEmail"
-                               x-model="orderForm.customer.email"
-                               placeholder="Email"
-                               value=""
-                               required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="customerPhone" class="form-label">Phone Number</label>
-                        <input type="tel" class="form-control"
-                               id="customerPhone"
-                               name="customerPhone"
-                               x-model="orderForm.customer.phone"
-                               pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                               placeholder="000-000-0000"
-                               value=""
-                               required>
-                    </div>
-                    <div class="col-6">
-                        <label for="deliveryAddressLine1" class="form-label">Delivery Address Line 1</label>
-                        <input class="form-control"
-                               id="deliveryAddressLine1"
-                               name="deliveryAddressLine1"
-                               x-model="orderForm.address.addressLine1"
-                               placeholder="Delivery Address"
-                               required/>
-                    </div>
-                    <div class="col-6">
-                        <label for="deliveryAddressLine2" class="form-label">Delivery Address Line 2</label>
-                        <input class="form-control"
-                               id="deliveryAddressLine2"
-                               name="deliveryAddressLine2"
-                               x-model="orderForm.address.addressLine2"/>
-                    </div>
-                    <div class="col-6">
-                        <label for="deliveryAddressCity" class="form-label">City</label>
-                        <input class="form-control"
-                               id="deliveryAddressCity"
-                               name="deliveryAddressCity"
-                               x-model="orderForm.address.city"
-                               placeholder="City"
-                               required/>
-                    </div>
-                    <div class="col-6">
-                        <label for="deliveryAddressState" class="form-label">State</label>
-                        <input class="form-control"
-                               id="deliveryAddressState"
-                               name="deliveryAddressState"
-                               x-model="orderForm.address.state"
-                               placeholder="State"
-                               required/>
-                    </div>
-                    <div class="col-6">
-                        <label for="deliveryAddressZipCode" class="form-label">Zip-Code</label>
-                        <input class="form-control"
-                               id="deliveryAddressZipCode"
-                               name="deliveryAddressZipCode"
-                               x-model="orderForm.address.zipCode"
-                               placeholder="ZipCode"
-                               required/>
-                    </div>
-                    <div class="col-6">
-                        <label for="deliveryAddressCountry" class="form-label">Country</label>
-                        <select class="form-control"
-                                id="deliveryAddressCountry"
-                                name="deliveryAddressCountry"
-                                x-model="orderForm.address.country"
-                                required>
-                            <template x-for="country in formValidationData.deliverableCountries">
-                                <option x-text="country" :value="country"></option>
-                            </template>
+                <form class="row g-3" method="post" @submit.prevent="createOrder" >
+                    <div class="row g-3" sec:authorize="isAuthenticated()">
+                        <div class="col-md-6">
+                            <label for="customerName" class="form-label">Name</label>
+                            <input type="text" class="form-control"
+                                   id="customerName"
+                                   name="customerName"
+                                   x-model="orderForm.customer.name"
+                                   placeholder="Name"
+                                   value=""
+                                   required/>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="customerEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control"
+                                   id="customerEmail"
+                                   name="customerEmail"
+                                   x-model="orderForm.customer.email"
+                                   placeholder="Email"
+                                   value=""
+                                   required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="customerPhone" class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control"
+                                   id="customerPhone"
+                                   name="customerPhone"
+                                   x-model="orderForm.customer.phone"
+                                   pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                                   placeholder="000-000-0000"
+                                   value=""
+                                   required>
+                        </div>
+                        <div class="col-6">
+                            <label for="deliveryAddressLine1" class="form-label">Delivery Address Line 1</label>
+                            <input class="form-control"
+                                   id="deliveryAddressLine1"
+                                   name="deliveryAddressLine1"
+                                   x-model="orderForm.address.addressLine1"
+                                   placeholder="Delivery Address"
+                                   required/>
+                        </div>
+                        <div class="col-6">
+                            <label for="deliveryAddressLine2" class="form-label">Delivery Address Line 2</label>
+                            <input class="form-control"
+                                   id="deliveryAddressLine2"
+                                   name="deliveryAddressLine2"
+                                   x-model="orderForm.address.addressLine2"/>
+                        </div>
+                        <div class="col-6">
+                            <label for="deliveryAddressCity" class="form-label">City</label>
+                            <input class="form-control"
+                                   id="deliveryAddressCity"
+                                   name="deliveryAddressCity"
+                                   x-model="orderForm.address.city"
+                                   placeholder="City"
+                                   required/>
+                        </div>
+                        <div class="col-6">
+                            <label for="deliveryAddressState" class="form-label">State</label>
+                            <input class="form-control"
+                                   id="deliveryAddressState"
+                                   name="deliveryAddressState"
+                                   x-model="orderForm.address.state"
+                                   placeholder="State"
+                                   required/>
+                        </div>
+                        <div class="col-6">
+                            <label for="deliveryAddressZipCode" class="form-label">Zip-Code</label>
+                            <input class="form-control"
+                                   id="deliveryAddressZipCode"
+                                   name="deliveryAddressZipCode"
+                                   x-model="orderForm.address.zipCode"
+                                   placeholder="ZipCode"
+                                   required/>
+                        </div>
+                        <div class="col-6">
+                            <label for="deliveryAddressCountry" class="form-label">Country</label>
+                            <select class="form-control"
+                                    id="deliveryAddressCountry"
+                                    name="deliveryAddressCountry"
+                                    x-model="orderForm.address.country"
+                                    required>
+                                <template x-for="country in formValidationData.deliverableCountries">
+                                    <option x-text="country" :value="country"></option>
+                                </template>
 
-                        </select>
+                            </select>
 
+                        </div>
                     </div>
                     <div class="col-12">
-                        <button type="submit" class="btn btn-primary">Place Order</button>
+                        <a class="btn btn-primary"
+                           sec:authorize="!isAuthenticated()"
+                           href="/oauth2/authorization/bookstore-webapp">
+                            Login
+                        </a>
+                        <button type="submit" class="btn btn-primary" sec:authorize="isAuthenticated()">Place Order</button>
                     </div>
                 </form>
             </div>
@@ -145,6 +153,8 @@
 </div>
 <div layout:fragment="pageScripts">
     <script src="/js/cart.js"></script>
+    <script src="/js/guestId.js"></script>
+
 </div>
 </body>
 </html>

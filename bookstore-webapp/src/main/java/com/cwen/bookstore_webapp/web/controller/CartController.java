@@ -14,6 +14,8 @@ import java.util.Map;
 
 @Controller
 public class CartController {
+
+
     private final CartServiceClient cartService;
     private final SecurityHelper securityHelper;
 
@@ -52,5 +54,31 @@ public class CartController {
         String accessToken =  securityHelper.getAccessToken();
         Map<String, ?> headers = Map.of("Authorization", "Bearer " + accessToken);
         return cartService.deleteCart(headers);
+    }
+
+    @PostMapping("api/carts/guest")
+    @ResponseBody
+    AddedToCartResponseDTO guestAddToCart(@Valid @RequestBody GuestAddToCartRequest guestAddToCartRequest) {
+        return cartService.guestAddToCart(guestAddToCartRequest);
+    }
+
+    @PostMapping("/api/carts/guest/update/quantity")
+    @ResponseBody
+    UpdateItemQuantityResponseDTO guestUpdateQuantity(@Valid @RequestBody GuestUpdateQuantityRequest guestUpdateQuantityRequest) {
+        return cartService.guestUpdateItemQuantity(guestUpdateQuantityRequest);
+    }
+
+    @GetMapping("/api/carts/guest/{guestId}")
+    @ResponseBody
+    List<CartItem> guestGetCart(@PathVariable String guestId) {
+        return cartService.guestGetCart(guestId);
+    }
+
+    @PostMapping("/api/carts/merge/{guestId}")
+    @ResponseBody
+    List<CartItem> mergeCarts(@PathVariable String guestId) {
+        String accessToken =  securityHelper.getAccessToken();
+        Map<String, ?> headers = Map.of("Authorization", "Bearer " + accessToken);
+        return cartService.mergeCarts(headers,guestId);
     }
 }

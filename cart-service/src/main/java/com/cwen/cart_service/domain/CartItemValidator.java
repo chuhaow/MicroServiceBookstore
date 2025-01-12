@@ -5,6 +5,7 @@ import com.cwen.cart_service.catalog.Models.Product;
 import com.cwen.cart_service.catalog.ProductServiceClient;
 import com.cwen.cart_service.domain.exceptions.InvalidItemException;
 import com.cwen.cart_service.domain.models.AddToCartRequest;
+import com.cwen.cart_service.domain.models.CartItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -21,11 +22,11 @@ public class CartItemValidator {
         this.productServiceClient = productServiceClient;
     }
 
-    public void validate(AddToCartRequest req){
-        Product product = productServiceClient.getProductByCode(req.item().code())
-                .orElseThrow(() -> new InvalidItemException("Invalid Product Code: " + req.item().code()));
-        if(product.price().compareTo(req.item().price()) != 0){
-            log.error("Product price is incorrect. Expected {}, got {}",product.price(),req.item().price());
+    public void validate(CartItem item){
+        Product product = productServiceClient.getProductByCode(item.code())
+                .orElseThrow(() -> new InvalidItemException("Invalid Product Code: " + item.code()));
+        if(product.price().compareTo(item.price()) != 0){
+            log.error("Product price is incorrect. Expected {}, got {}",product.price(),item.price());
             throw new InvalidItemException("Product price does not match");
         }
     }

@@ -1,12 +1,20 @@
 document.addEventListener('alpine:init', ()=>{
     Alpine.data('initData', (pageNo) => ({
+        isAuthenticated: false,
         pageNo: pageNo,
         products:{
             data:[]
         },
         init(){
+            const authStatusElement = document.getElementById('auth-status');
+            this.isAuthenticated = authStatusElement !== null
             this.loadProducts(pageNo)
-            updateCartItemCount();
+            generateGuestId()
+            if(this.isAuthenticated){
+                updateCartItemCount();
+            }else{
+                guestUpdateCartItemCount()
+            }
         },
         loadProducts(pageNo){
             console.log("loading products")
@@ -16,10 +24,12 @@ document.addEventListener('alpine:init', ()=>{
             })
         },
         addToCart(product){
-            console.log(product)
             console.log("Adding "+ product.name)
-            /**/
             addProductToCart(product)
+        },
+        addToGuestCart(product){
+            console.log("Adding "+ product.name)
+            guestAddProductToCart(product)
         }
     }))
 });

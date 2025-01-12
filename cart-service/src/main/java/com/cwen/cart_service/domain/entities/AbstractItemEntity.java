@@ -1,21 +1,16 @@
-package com.cwen.cart_service.domain;
+package com.cwen.cart_service.domain.entities;
 
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "cart_items")
-public class CartItemEntity {
+@MappedSuperclass
+public abstract class AbstractItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_item_id_generator")
     @SequenceGenerator(name = "cart_item_id_generator", sequenceName = "cart_item_id_seq")
     @Column(name = "cart_item_id")
     private Long id;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "cart_id")
-    private CartEntity cart;
 
     @Column(name ="product_code", nullable = false)
     private String code;
@@ -35,14 +30,6 @@ public class CartItemEntity {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public CartEntity getCart() {
-        return cart;
-    }
-
-    public void setCart(CartEntity cart) {
-        this.cart = cart;
     }
 
     public String getCode() {

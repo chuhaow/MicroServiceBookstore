@@ -1,105 +1,79 @@
 package com.cwen.cart_service.domain;
 
-import com.cwen.cart_service.domain.exceptions.ItemNotFoundInCartException;
-import com.cwen.cart_service.domain.models.*;
-import jakarta.validation.Valid;
+import com.cwen.cart_service.domain.entities.auth.AuthCartEntity;
+import com.cwen.cart_service.domain.entities.auth.AuthCartItemEntity;
+import com.cwen.cart_service.domain.entities.guest.GuestCartEntity;
+import com.cwen.cart_service.domain.entities.guest.GuestCartItemEntity;
+import com.cwen.cart_service.domain.repositories.auth.AuthUserCartRepository;
+import com.cwen.cart_service.domain.repositories.guest.GuestCartRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Transactional
 public class CartService {
-    private static Logger logger = LoggerFactory.getLogger(CartService.class);
+    private static final Logger log = LoggerFactory.getLogger(CartService.class);
 
-    private final CartRepository cartRepository;
-    private final CartItemValidator cartItemValidator;
+    private final GuestCartRepository guestCartRepository;
+    private final AuthUserCartRepository authUserCartRepository;
 
-    public CartService(final CartRepository cartRepository, final CartItemValidator cartItemValidator) {
-        this.cartRepository = cartRepository;
-        this.cartItemValidator = cartItemValidator;
+    public CartService(GuestCartRepository guestCartRepository, AuthUserCartRepository authUserCartRepository) {
+        this.guestCartRepository = guestCartRepository;
+        this.authUserCartRepository = authUserCartRepository;
     }
 
-    public AddToCartResponse addToCart(@Valid AddToCartRequest request, String user) {
-        cartItemValidator.validate(request);
-        CartItem cartItem = request.item();
+    public void mergeGuestCart(String guestId, String authUserId){
+        log.info("Merging items for guestID: {} with contains of authUserId: {} cart", guestId, authUserId);
+        GuestCartEntity guestCart = guestCartRepository.findByUserId(guestId)
+                .orElseThrow(() -> new RuntimeException("Cart not found for guest ID: " + guestId));
 
-        CartEntity cart = cartRepository.findByUserId(user)
+        AuthCartEntity authCart = authUserCartRepository.findByUserId(authUserId)
                 .orElseGet( () -> {
-                    CartEntity newCart = new CartEntity();
-                    newCart.setUserId(user);
+                    AuthCartEntity newCart = new AuthCartEntity();
+                    newCart.setUserId(authUserId);
                     newCart.setCreatedAt(LocalDateTime.now());
                     newCart.setItems(new HashSet<>());
                     return newCart;
                 });
 
-        Optional<CartItemEntity> existingItem = cart.getItems().stream()
-                .filter(item -> item.getCode().equals(cartItem.code()))
-                .findFirst();
+        List<GuestCartItemEntity> guestItems = guestCart.getItems().stream().toList();
+        Set<AuthCartItemEntity> authCartItems = authCart.getItems();
 
-        if(existingItem.isPresent()) {
-            CartItemEntity itemEntity = existingItem.get();
-            itemEntity.setQuantity(itemEntity.getQuantity() + cartItem.quantity());
-        }else{
-            CartItemEntity cartItemEntity = new CartItemEntity();
-            cartItemEntity.setCode(cartItem.code());
-            cartItemEntity.setName(cartItem.name());
-            cartItemEntity.setPrice(cartItem.price());
-            cartItemEntity.setQuantity(cartItem.quantity());
-            cartItemEntity.setCart(cart);
-            cart.getItems().add(cartItemEntity);
-        }
+        // Merge items
+        for (GuestCartItemEntity guestItem : guestItems) {
+            Optional<AuthCartItemEntity> matchingItem = authCartItems.stream()
+                    .filter(authItem -> authItem.getCode().equals(guestItem.getCode()))
+                    .findFirst();
 
-        cart.setUpdatedAt(LocalDateTime.now());
-        CartEntity savedCart = cartRepository.save(cart);
-        return new AddToCartResponse(savedCart.getId());
-    }
+            if (matchingItem.isPresent()) {
 
-    public UpdateItemQuantityResponse updateItemQuantity(@Valid UpdateItemQuantityRequest request, String user){
-        String code = request.itemCode();
-        Integer quantity = request.quantity();
+                AuthCartItemEntity authItem = matchingItem.get();
+                authItem.setQuantity(authItem.getQuantity() + guestItem.getQuantity());
+            } else {
 
-        CartEntity cart = cartRepository.findByUserId(user)
-                .orElseThrow(() -> new RuntimeException("Cart not found for user ID: " + user));
+                AuthCartItemEntity newAuthItem = new AuthCartItemEntity();
+                newAuthItem.setCode(guestItem.getCode());
+                newAuthItem.setName(guestItem.getName());
+                newAuthItem.setQuantity(guestItem.getQuantity());
+                newAuthItem.setPrice(guestItem.getPrice());
+                newAuthItem.setCart(authCart);
+                authCartItems.add(newAuthItem);
 
-
-        Optional<CartItemEntity> itemToUpdateOpt = cart.getItems().stream()
-                .filter(item -> item.getCode().equals(code))
-                .findFirst();
-
-        if (itemToUpdateOpt.isPresent()) {
-            CartItemEntity itemToUpdate = itemToUpdateOpt.get();
-
-            if (quantity == 0) {
-                cart.getItems().remove(itemToUpdate);
-            }else{
-                itemToUpdate.setQuantity(quantity);
             }
-
-            cart.setUpdatedAt(LocalDateTime.now());
-            CartEntity savedCart = cartRepository.save(cart);
-
-            return new UpdateItemQuantityResponse(code, savedCart.getId());
-        } else {
-            throw new ItemNotFoundInCartException("Item not found in the cart for user ID: " + user);
         }
-    }
 
-    public List<CartItemDTO> getCartItems(String userId) {
-        Optional<CartEntity> cart = cartRepository.findByUserId(userId);
-        return cart.map(c -> c.getItems().stream()
-                        .map(item -> new CartItemDTO(item.getCode(), item.getName(), item.getPrice(), item.getQuantity()))
-                        .collect(Collectors.toList()))
-                .orElseGet(ArrayList::new);
-    }
+        authUserCartRepository.save(authCart);
+        guestCartRepository.delete(guestCart);
 
 
-    public void deleteCart(String userId) {
-        cartRepository.deleteByUserId(userId);
     }
+
 }

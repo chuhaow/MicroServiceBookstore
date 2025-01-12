@@ -1,13 +1,11 @@
-package com.cwen.cart_service.domain;
+package com.cwen.cart_service.domain.entities;
 
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
-@Entity
-@Table(name = "carts")
-public class CartEntity {
+@MappedSuperclass
+public abstract class AbstractCartEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "cart_id_generator")
     @SequenceGenerator(name = "cart_id_generator", sequenceName = "cart_id_seq")
@@ -16,9 +14,6 @@ public class CartEntity {
 
     @Column(name = "user_id", nullable=false)
     private String userId;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart",orphanRemoval = true)
-    private Set<CartItemEntity> items;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -40,14 +35,6 @@ public class CartEntity {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public Set<CartItemEntity> getItems() {
-        return items;
-    }
-
-    public void setItems(Set<CartItemEntity> items) {
-        this.items = items;
     }
 
     public LocalDateTime getCreatedAt() {

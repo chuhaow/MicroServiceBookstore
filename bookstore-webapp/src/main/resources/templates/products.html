@@ -8,6 +8,7 @@
 
 <body>
 <div layout:fragment="content">
+    <div id="auth-status" sec:authorize="isAuthenticated()"></div>
     <div th:x-data="|initData('${pageNo}')|">
         <div th:replace="~{fragments/pagination :: pagination}"></div>
         <div class="row row-cols-1 row-cols-md-5">
@@ -31,15 +32,18 @@
                         </div>
                         <div class="card-footer" style="background: transparent; border-top: 0;">
                             <div class="d-grid gap-2">
-                                <a class="btn btn-primary"
-                                   sec:authorize="!isAuthenticated()"
-                                   href="/oauth2/authorization/bookstore-webapp">
-                                    Add To Cart
-                                </a>
+
+                                <!-- Button for authenticated users -->
                                 <button class="btn btn-primary"
                                         sec:authorize="isAuthenticated()"
-                                        @click="addToCart(product)">
+                                        @click="addToGuestCart(product)">
                                     Add To Cart
+                                </button>
+
+                                <button class="btn btn-secondary"
+                                        sec:authorize="!isAuthenticated()"
+                                        @click="addToGuestCart(product)">
+                                    Add To Cart as Guest
                                 </button>
                             </div>
                         </div>
@@ -51,6 +55,7 @@
 </div>
 <div layout:fragment="pageScripts">
     <script src="/js/products.js"></script>
+    <script src="/js/guestId.js"></script>
 </div>
 
 </body>
