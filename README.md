@@ -13,6 +13,12 @@ The architecture is designed using a microservice approach to ensure scalability
 
 ---
 
+## Diagram
+
+![Architecture Diagram](./images/bookstoreArchitecture.png)
+
+---
+
 ## Modules and Components
 
 ### 1. **Bookstore Webapp**
@@ -145,8 +151,3 @@ Each service that requires data persistence uses PostgreSQL, ensuring isolation 
 - All services are containerized using Docker and orchestrated through Docker Compose or Kubernetes.
 - Each service runs independently, allowing for easy scaling and deployment.
 
----
-
-## Diagram
-
-![Architecture Diagram](./images/bookstoreArchitecture.png)
